@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Demos
 {
+    /// <summary>
+    /// A simple jump module. Adds force to reach given height.
+    /// </summary>
     public class CharacterJumpModule : AbstractCharacterModule
     {
         [Header("Jump")]
@@ -22,7 +25,7 @@ namespace Demos
             _inputModule = Controller.GetModule<CharacterInputModule>();
             _gravityModule = Controller.GetModule<CharacterGravityModule>();
             
-            //Some inputs can fall between fixed updates
+            //Inputs such as Button Down can be lost between Fixed Updates, so we process them ASAP after every Input update.
             _inputModule.onInput += OnInput;
         }
 

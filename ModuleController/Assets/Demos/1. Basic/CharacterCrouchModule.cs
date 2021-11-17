@@ -14,6 +14,9 @@ namespace Demos
         public Collider[] Results;
     }
     
+    /// <summary>
+    /// Changes the height of the Character Controller to simulate crouching.
+    /// </summary>
     public class CharacterCrouchModule : AbstractCharacterModule
     {
         [Header("Crouch")]
@@ -58,6 +61,10 @@ namespace Demos
             }
         }
 
+        /// <summary>
+        /// Uses OverlapCapsule to check for obstacles when uncrouhing.
+        /// </summary>
+        /// <returns>true if no obstacles found, false if an obstacle is found</returns>
         private bool CanUncrouch()
         {
             var origin = Controller.Transform.position;
@@ -70,6 +77,7 @@ namespace Demos
             var results = new Collider[Controller.LocalColliders.Count + 1];
             var hitCount = Physics.OverlapCapsuleNonAlloc(point1, point2, radius, results);
             
+            //Store debug data
             DebugData = new CrouchDebugData()
             {
                 Point1 = point1,
@@ -79,13 +87,14 @@ namespace Demos
                 Results = results
             };
             
-            //
+            //If one of the hit colliders is not ours, can't uncrouch
             for (int i = 0; i < hitCount; i++)
             {
                 if (!Controller.LocalColliders.Contains(results[i]))
                     return false;
             }
 
+            //No obstacles, we can uncrouch
             return true;
         }
 
@@ -98,6 +107,7 @@ namespace Demos
             color.a *= 0.25f;
             Gizmos.color = color;
             
+            //draws obstacle check capsule.
             Gizmos.DrawSphere(DebugData.Point1, DebugData.Radius);
             Gizmos.DrawSphere(DebugData.Point2, DebugData.Radius);
         }

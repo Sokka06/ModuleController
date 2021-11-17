@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Demos
 {
+    /// <summary>
+    /// Adds gravity to Character.
+    /// </summary>
     public class CharacterGravityModule : AbstractCharacterModule
     {
         [Header("Gravity")]
@@ -26,6 +29,10 @@ namespace Demos
             Controller.AddVelocity(Up * Gravity * deltaTime);
         }
 
+        /// <summary>
+        /// Sets gravity up direction.
+        /// </summary>
+        /// <param name="up"></param>
         public void SetGravityUp(Vector3 up)
         {
             Up = up;

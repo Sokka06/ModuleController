@@ -11,6 +11,9 @@ namespace Demos
         Velocity
     }
     
+    /// <summary>
+    /// Rotates character towards input or velocity direction.
+    /// </summary>
     public class CharacterRotateModule : AbstractCharacterModule
     {
         [Header("Rotate"), Tooltip("Input = Rotate character towards Input, Velocity = Rotate character towards velocity of the character.")]
@@ -35,7 +38,7 @@ namespace Demos
             GetLookDir(RotateMode, out var lookDir);
             if (lookDir != Vector3.zero)
             {
-                var rotation = Quaternion.LookRotation(Sharpness > 0f ? Vector3.Slerp(Controller.Transform.forward, lookDir, Sharpness * deltaTime).normalized : lookDir, Controller.Transform.up);
+                var rotation = Quaternion.LookRotation(Sharpness > 0f ? Vector3.Slerp(Controller.Transform.forward, lookDir, Sharpness * deltaTime) : lookDir, Controller.Transform.up);
                 Controller.SetRotation(rotation);
             }
         }

@@ -5,9 +5,12 @@ using UnityEngine;
 
 namespace Demos.Demo1
 {
-    public class CapsuleBodyModule : AbstractViewModule
+    /// <summary>
+    /// A simple View module. Currently just simulates crouching by scaling down the root transform.
+    /// </summary>
+    public class ViewCrouchModule : AbstractViewModule
     {
-        [Header("Body")]
+        [Header("Crouch")]
         public Transform Root;
         public float CrouchDuration = 0.2f;
         
@@ -32,6 +35,9 @@ namespace Demos.Demo1
 
         public override void UpdateModule(float deltaTime)
         {
+            if (!Enabled)
+                return;
+
             if (_crouchModule.IsCrouching && !_prevIsCrouching)
             {
                 //Started crouching

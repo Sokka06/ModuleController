@@ -6,10 +6,17 @@ using UnityEngine;
 
 namespace Demos
 {
+    public struct CharacterGroundData
+    {
+        public bool HasGround;
+        public Vector3 Normal;
+        public Vector3 Point;
+    }
+    
     /// <summary>
-    /// Holds all modules, updates them
+    /// Holds all modules, updates them and uses Character Controller to move and rotate the character.
     /// </summary>
-    [DefaultExecutionOrder(-5)] //Make sure Modules are setup before any other script tries to access them.
+    [DefaultExecutionOrder(-5)] //Makes sure Modules are setup before any other script tries to access them.
     public class CharacterModuleController : MonoBehaviour, IModuleController<CharacterModuleController, AbstractCharacterModule>
     {
         public CharacterController CharacterController;
@@ -21,6 +28,7 @@ namespace Demos
 
         public Transform Transform => CharacterController.transform;
         public HashSet<Collider> LocalColliders { get; private set; }
+        public CharacterGroundData GroundData { get; private set; }
 
         private void OnValidate()
         {
@@ -32,8 +40,9 @@ namespace Demos
         private void Awake()
         {
             LocalColliders = new HashSet<Collider>(Transform.GetComponentsInChildren<Collider>());
+            GroundData = new CharacterGroundData();
 
-            SetRotation(CharacterController.transform.rotation);
+            SetRotation(Transform.rotation);
             
             SetupModules();
         }
@@ -41,24 +50,23 @@ namespace Demos
         private void FixedUpdate()
         {
             var deltaTime = Time.deltaTime;
-            
-            //unnecessary bug fix?
-            /*if (CharacterController.isGrounded && Velocity.y < 0)
-            {
-                var velocity = Velocity;
-                velocity.y = 0f;
-                SetVelocity(velocity);
-            }*/
 
+            var groundData = new CharacterGroundData();
+            if (CharacterController.isGrounded)
+                UpdateGround(out groundData);
+            GroundData = groundData;
+
+            //Update all modules.
             for (int i = 0; i < Modules.Count; i++)
             {
                 Modules[i].UpdateModule(deltaTime);
             }
 
+            //Move and rotate character.
             CharacterController.Move(Velocity * deltaTime);
-            CharacterController.transform.rotation = Rotation;
+            Transform.rotation = Rotation;
         }
-
+        
         public void AddVelocity(Vector3 velocity)
         {
             Velocity += velocity;
@@ -74,6 +82,10 @@ namespace Demos
             Rotation = rotation;
         }
 
+        /// <summary>
+        /// Changes the height of the character.
+        /// </summary>
+        /// <param name="height"></param>
         public void SetHeight(float height)
         {
             height = Mathf.Max(height, CharacterController.radius * 2f);
@@ -82,6 +94,65 @@ namespace Demos
             var newCenter = CharacterController.center;
             newCenter.y = height * 0.5f;
             CharacterController.center = newCenter;
+        }
+
+        /// <summary>
+        /// Moves Character to given position. 
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="resetVelocity"></param>
+        /// <param name="resetRotation"></param>
+        public void Teleport(Vector3 position, bool resetVelocity = false, bool resetRotation = false)
+        {
+            CharacterController.enabled = false;
+            Transform.position = position;
+            
+            if(resetVelocity)
+                SetVelocity(Vector3.zero);
+            
+            if(resetRotation)
+                SetRotation(Quaternion.identity);
+            
+            CharacterController.enabled = true;
+        }
+
+        public void UpdateGround(out CharacterGroundData groundData)
+        {
+            var ray = new Ray(Transform.position + Transform.up * CharacterController.radius, -Transform.up);
+            var results = new RaycastHit[LocalColliders.Count + 4];
+            var hitCount =
+                Physics.SphereCastNonAlloc(ray, CharacterController.radius, results, CharacterController.skinWidth * 2f);
+                
+            var hasGround = false;
+            var normal = Transform.up;
+            var point = Vector3.zero;
+
+            var closestDistance = float.MaxValue;
+            for (int i = 0; i < hitCount; i++)
+            {
+                if (LocalColliders.Contains(results[i].collider))
+                    continue;
+
+                if (closestDistance < results[i].distance)
+                    continue;
+                
+                hasGround = true;
+                normal = results[i].normal;
+                point = results[i].point;
+                closestDistance = results[i].distance;
+                
+                //
+                var distanceDelta = Mathf.Abs(closestDistance - results[i].distance);
+                if (distanceDelta < 0.01f)
+                    continue;
+            }
+
+            groundData = new CharacterGroundData()
+            {
+                HasGround = hasGround,
+                Normal = normal,
+                Point = point
+            };
         }
 
         #region ModuleController
@@ -116,5 +187,18 @@ namespace Demos
             return null;
         }
         #endregion
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!GroundData.HasGround)
+                return;
+            
+            var color = Color.blue;
+            color.a *= 0.25f;
+            Gizmos.color = color;
+            
+            Gizmos.DrawRay(GroundData.Point, GroundData.Normal);
+            Gizmos.DrawSphere(GroundData.Point, 0.05f);
+        }
     }
 }

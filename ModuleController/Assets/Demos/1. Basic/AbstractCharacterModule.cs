@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Demos
 {
+    /// <summary>
+    /// Base class for all Character modules.
+    /// </summary>
     public abstract class AbstractCharacterModule : MonoBehaviour, IModule<CharacterModuleController, AbstractCharacterModule>
     {
         public bool Enabled = true;
