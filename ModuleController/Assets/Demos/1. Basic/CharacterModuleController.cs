@@ -19,6 +19,9 @@ namespace Demos
         public Vector3 Velocity { get; private set; }
         public Quaternion Rotation { get; private set; }
 
+        public Transform Transform => CharacterController.transform;
+        public HashSet<Collider> LocalColliders { get; private set; }
+
         private void OnValidate()
         {
             //To save a few seconds of my life
@@ -28,6 +31,8 @@ namespace Demos
 
         private void Awake()
         {
+            LocalColliders = new HashSet<Collider>(Transform.GetComponentsInChildren<Collider>());
+
             SetRotation(CharacterController.transform.rotation);
             
             SetupModules();
@@ -44,13 +49,6 @@ namespace Demos
                 velocity.y = 0f;
                 SetVelocity(velocity);
             }*/
-
-            //Rotate towards movement. Can be moved to its own module.
-            var lookDir = Velocity;
-            lookDir.y = 0f;
-            lookDir.Normalize();
-            if (lookDir != Vector3.zero)
-                SetRotation(Quaternion.LookRotation(Vector3.Slerp(CharacterController.transform.forward, lookDir, 25f * deltaTime).normalized, CharacterController.transform.up));
 
             for (int i = 0; i < Modules.Count; i++)
             {
@@ -74,6 +72,16 @@ namespace Demos
         public void SetRotation(Quaternion rotation)
         {
             Rotation = rotation;
+        }
+
+        public void SetHeight(float height)
+        {
+            height = Mathf.Max(height, CharacterController.radius * 2f);
+            
+            CharacterController.height = height;
+            var newCenter = CharacterController.center;
+            newCenter.y = height * 0.5f;
+            CharacterController.center = newCenter;
         }
 
         #region ModuleController

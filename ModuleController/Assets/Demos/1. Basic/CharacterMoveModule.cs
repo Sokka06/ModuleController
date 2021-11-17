@@ -4,15 +4,24 @@ using UnityEngine;
 
 namespace Demos
 {
+    public enum CharacterMoveMode
+    {
+        Input,
+        Forward
+    }
+    
     public class CharacterMoveModule : AbstractCharacterModule
     {
-        [Header("Move")]
+        [Header("Move"), Tooltip("Input = Moves towards input, Forward = Moves towards current forward direction.")] 
+        public CharacterMoveMode MoveMode;
+        
+        [Space]
         public float SpeedGrounded = 5f;
         public float Smoothness = 30f;
         
-        [Header("Air")]
+        [Space]
         public float SpeedAir = 5f;
-        public float AccelerationAir = 30f;
+        public float Acceleration = 30f;
 
         private CharacterInputModule _inputModule;
 
@@ -28,14 +37,14 @@ namespace Demos
             if (!Enabled)
                 return;
 
-            var dir = new Vector3(_inputModule.Inputs.Move.x, 0f, _inputModule.Inputs.Move.y);
+            GetMoveDir(MoveMode, out var moveDir);
             
             var targetMovementVelocity = Vector3.zero;
             if (Controller.CharacterController.isGrounded)
             {
                 // Calculate target velocity
-                Vector3 inputRight = Vector3.Cross(dir, Controller.CharacterController.transform.up);
-                targetMovementVelocity = dir * SpeedGrounded;
+                Vector3 inputRight = Vector3.Cross(moveDir, Controller.CharacterController.transform.up);
+                targetMovementVelocity = moveDir * SpeedGrounded *  _inputModule.Inputs.Move.magnitude;
 
                 // Smooth movement Velocity
                 Controller.SetVelocity(Vector3.Lerp(Controller.Velocity, targetMovementVelocity, Smoothness * deltaTime));
@@ -43,14 +52,31 @@ namespace Demos
             else
             {
                 // Add move input
-                if (dir.sqrMagnitude > 0f)
+                if (moveDir.sqrMagnitude > 0f)
                 {
-                    targetMovementVelocity = dir * SpeedAir;
+                    targetMovementVelocity = moveDir * SpeedAir * _inputModule.Inputs.Move.magnitude;
 
                     var velocityDiff = Vector3.ProjectOnPlane(targetMovementVelocity - Controller.Velocity, Vector3.up);
-                    Controller.AddVelocity(velocityDiff * AccelerationAir * deltaTime);
+                    Controller.AddVelocity(velocityDiff * Acceleration * deltaTime);
                 }
             }
+        }
+        
+        private void GetMoveDir(CharacterMoveMode mode, out Vector3 moveDir)
+        {
+            moveDir = Vector3.zero;
+            switch (mode)
+            {
+                case CharacterMoveMode.Input:
+                    moveDir = new Vector3(_inputModule.Inputs.Move.x, 0f, _inputModule.Inputs.Move.y);
+                    break;
+                case CharacterMoveMode.Forward:
+                    moveDir = Controller.Transform.forward;
+                    break;
+            }
+
+            moveDir.y = 0f;
+            moveDir.Normalize();
         }
     }
 }
