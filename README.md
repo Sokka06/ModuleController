@@ -1,13 +1,15 @@
 # ModuleController
-Something useful for character controllers, view controllers, audio controllers.
-
 ![modulecontroller](https://user-images.githubusercontent.com/54811990/142493660-2f6a2e08-5cec-4284-9462-8664e301eb6c.png)
+
+Something useful for character controllers, view controllers, audio controllers.
 
 ## Getting started
 1. Clone or download repository.
-2. Copy ModuleController from Plugins folder to your project.
-3. Take a look at the included Demos to see examples how you can introduce a bit more modularity into your Character Controllers and such.
+2. Copy **ModuleController** folder from **Plugins** folder to your project.
+3. Take a look at the included *Demos* to see examples how you can introduce a bit more modularity into your *Character Controllers* and such.
 4. Done!
+
+Developed in *Unity 2020.3.22f1*, but I don't see why it wouldn't work on every Unity version.
 
 ## How To Use
 1. Create new scripts for your *Module Controller* (named *FooModuleController*, for example) and for your *Module base class* (named *AbstractFooModule*, for example).
