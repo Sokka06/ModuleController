@@ -15,5 +15,5 @@ Developed in *Unity 2020.3.22f1*, but I don't see why it wouldn't work on every 
 1. Create new scripts for your *Module Controller* (named *FooModuleController*, for example) and for your *Module base class* (named *AbstractFooModule*, for example).
 2. If your scripts are *MonoBehaviours*, you can inherit from **ModuleControllerBehaviour** and **ModuleBehaviour**, which are also *MonoBehaviours* and include all the needed boilerplate code. Alternatively you can implement **IModuleController** and **IModule** interfaces to customize your scripts more.
 3. Make new scripts for your *Modules* (named *FooBarModule, FooBazModule*, etc) and make them inherit from your *module base class*. You can override your module's *SetupModule* method and add `Debug.Log($"Hello {GetType().Name}");` to make sure they're setup correctly.
-4. Make a new *GameObject* and add your *Module Controller* and *Modules* on it.
+4. Make a new *GameObject* and add your *Module Controller* and *Module* scripts on it.
 5. Press play!
