@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Demos.Demo1
 {
     /// <summary>
-    /// A simple View module. Currently just simulates crouching by scaling down the root transform.
+    /// Aligns view to the ground normal.
     /// </summary>
     public class ViewAlignModule : AbstractViewModule
     {
@@ -28,7 +28,7 @@ namespace Demos.Demo1
 
             var currentUp = Root.rotation * Vector3.up;
             
-            //Snippets from KinematicCharacterController
+            //Snippets from KinematicCharacterController (https://assetstore.unity.com/packages/tools/physics/kinematic-character-controller-99131)
             var smoothedGroundNormal = Vector3.Slerp(Root.up, targetUp, 1 - Mathf.Exp(-Sharpness * deltaTime));
             var forward = Vector3.Cross(-smoothedGroundNormal, Controller.Character.Transform.right);
             Root.rotation = Quaternion.LookRotation(forward, smoothedGroundNormal);

@@ -20,7 +20,6 @@ namespace Demos
         public float Sharpness = 5f;
 
         private CharacterGravityModule _gravityModule;
-        private Vector3 _prevUp;
 
         public override void SetupModule(CharacterModuleController controller)
         {
@@ -43,7 +42,7 @@ namespace Demos
 
             var currentUp = Controller.Rotation * Vector3.up;
             
-            //Snippets from KinematicCharacterController
+            //Snippets from KinematicCharacterController (https://assetstore.unity.com/packages/tools/physics/kinematic-character-controller-99131)
             var smoothedGroundNormal = Vector3.Slerp(Controller.Transform.up, targetUp, 1 - Mathf.Exp(-Sharpness * deltaTime));
             Controller.SetRotation(Quaternion.FromToRotation(currentUp, smoothedGroundNormal) * Controller.Rotation);
 
@@ -55,8 +54,6 @@ namespace Demos
                 Quaternion.FromToRotation(currentUp, targetUp) * Controller.Rotation;
             
             Controller.SetRotation(Quaternion.Slerp(Controller.Rotation, targetRotation, Sharpness * deltaTime));*/
-
-            _prevUp = targetUp;
         }
     }
 }

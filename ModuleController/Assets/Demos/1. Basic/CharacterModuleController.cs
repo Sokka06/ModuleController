@@ -11,6 +11,8 @@ namespace Demos
         public bool HasGround;
         public Vector3 Normal;
         public Vector3 Point;
+        public RaycastHit[] Results;
+        public int Count;
     }
     
     /// <summary>
@@ -52,11 +54,10 @@ namespace Demos
             var deltaTime = Time.deltaTime;
 
             var groundData = new CharacterGroundData();
-            if (CharacterController.isGrounded)
-                UpdateGround(out groundData);
+            UpdateGround(out groundData);
             GroundData = groundData;
 
-            //Update all modules.
+            //Update all modules. Notice that Modules are updated in the order they were in inspector when the modules were setup.
             for (int i = 0; i < Modules.Count; i++)
             {
                 Modules[i].UpdateModule(deltaTime);
@@ -106,32 +107,43 @@ namespace Demos
         {
             CharacterController.enabled = false;
             Transform.position = position;
+            CharacterController.enabled = true;
             
             if(resetVelocity)
                 SetVelocity(Vector3.zero);
             
             if(resetRotation)
                 SetRotation(Quaternion.identity);
-            
-            CharacterController.enabled = true;
         }
-
+        
+        /// <summary>
+        /// Uses SphereCast to find ground data that Character Controller does not expose.
+        /// </summary>
+        /// <param name="groundData"></param>
         public void UpdateGround(out CharacterGroundData groundData)
         {
+            var maxResults = 4;
+            
             var ray = new Ray(Transform.position + Transform.up * CharacterController.radius, -Transform.up);
-            var results = new RaycastHit[LocalColliders.Count + 4];
+            var results = new RaycastHit[LocalColliders.Count + maxResults];
             var hitCount =
                 Physics.SphereCastNonAlloc(ray, CharacterController.radius, results, CharacterController.skinWidth * 2f);
                 
             var hasGround = false;
             var normal = Transform.up;
             var point = Vector3.zero;
-
             var closestDistance = float.MaxValue;
+            
+            var filteredResults = new RaycastHit[maxResults];
+            var filteredIndex = 0;
+
             for (int i = 0; i < hitCount; i++)
             {
                 if (LocalColliders.Contains(results[i].collider))
                     continue;
+
+                filteredResults[filteredIndex] = results[i];
+                filteredIndex++;
 
                 if (closestDistance < results[i].distance)
                     continue;
@@ -141,17 +153,21 @@ namespace Demos
                 point = results[i].point;
                 closestDistance = results[i].distance;
                 
-                //
+                //TODO: delete. need to add ground normal averaging from multiple close hits.
+                /*
                 var distanceDelta = Mathf.Abs(closestDistance - results[i].distance);
                 if (distanceDelta < 0.01f)
-                    continue;
+                    Debug.Log("Similar distance");
+                */
             }
 
             groundData = new CharacterGroundData()
             {
                 HasGround = hasGround,
                 Normal = normal,
-                Point = point
+                Point = point,
+                Results = filteredResults,
+                Count = filteredIndex
             };
         }
 

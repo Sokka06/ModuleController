@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using Demos;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,11 +9,21 @@ using UnityEngine.InputSystem;
 
 namespace Demos
 {
+    public enum PlayerInputDevice
+    {
+        Any,
+        KeyboardAndMouse,
+        Gamepad
+    }
+    
     public class PlayerInputController : MonoBehaviour
     {
+        public PlayerInputDevice InputDevice;
         public CharacterModuleController Controller;
+        public CinemachineVirtualCameraBase VirtualCamera;
 
         private CharacterInputModule _inputModule;
+        private PlayerInputProvider _inputProvider;
         private Transform _cameraTransform;
     
         private void Awake()
@@ -20,6 +31,7 @@ namespace Demos
             _cameraTransform = Camera.main.transform;
         
             _inputModule = Controller.GetModule<CharacterInputModule>();
+            _inputProvider = VirtualCamera.GetComponent<PlayerInputProvider>();
             
             InputSystem.onAfterUpdate += OnAfterUpdate;
         }
@@ -31,13 +43,14 @@ namespace Demos
 
         private void OnAfterUpdate()
         {
+            //Character inputs
             var moveInput = new Vector2();
             var jumpDown = false;
             var sprintInput = false;
             var crouchInput = false;
             
             var keyboard = Keyboard.current;
-            if (keyboard != null)
+            if (keyboard != null && (InputDevice == PlayerInputDevice.KeyboardAndMouse || InputDevice == PlayerInputDevice.Any))
             {
                 //Up input
                 if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed)
@@ -58,7 +71,7 @@ namespace Demos
             }
             
             var gamepad = Gamepad.current;
-            if (gamepad != null)
+            if (gamepad != null && (InputDevice == PlayerInputDevice.Gamepad || InputDevice == PlayerInputDevice.Any))
             {
                 moveInput += gamepad.leftStick.ReadValue();
 
@@ -79,6 +92,26 @@ namespace Demos
                 Crouch = crouchInput
             };
             _inputModule.SetInputs(ref characterInputs);
+            
+            //Camera inputs
+            var axis = new Vector2();
+            
+            var mouse = Mouse.current;
+            if (mouse != null && (InputDevice == PlayerInputDevice.KeyboardAndMouse || InputDevice == PlayerInputDevice.Any))
+            {
+                axis = mouse.delta.ReadValue();
+            }
+            
+            if (gamepad != null && (InputDevice == PlayerInputDevice.Gamepad || InputDevice == PlayerInputDevice.Any))
+            {
+                axis += gamepad.rightStick.ReadValue();
+            }
+            
+            var cameraInputs = new PlayerCameraInputs()
+            {
+                Axis = axis
+            };
+            _inputProvider.SetInputs(ref cameraInputs);
         }
 
         private void RelativeToTransform(ref Vector2 vector, Transform relativeTransform)

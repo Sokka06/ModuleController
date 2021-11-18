@@ -4,11 +4,23 @@ using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Simply reads mouse input and gives it to free look camera.
-/// </summary>
-public class SimpleInputProvider : MonoBehaviour, AxisState.IInputAxisProvider
+public struct PlayerCameraInputs
 {
+    public Vector2 Axis;
+}
+
+/// <summary>
+/// Provides input to free look camera
+/// </summary>
+public class PlayerInputProvider : MonoBehaviour, AxisState.IInputAxisProvider
+{
+    public PlayerCameraInputs Inputs { get; private set; }
+    
+    public void SetInputs(ref PlayerCameraInputs inputs)
+    {
+        Inputs = inputs;
+    }
+    
     /// <summary>
     /// Implementation of AxisState.IInputAxisProvider.GetAxisValue().
     /// Axis index ranges from 0...2 for X, Y, and Z.
@@ -18,14 +30,10 @@ public class SimpleInputProvider : MonoBehaviour, AxisState.IInputAxisProvider
     /// <returns>The current axis value</returns>
     public virtual float GetAxisValue(int axis)
     {
-        var mouse = Mouse.current;
-        if (mouse == null)
-            return 0;
-        
         switch (axis)
         {
-            case 0: return mouse.delta.ReadValue().x;
-            case 1: return mouse.delta.ReadValue().y;
+            case 0: return Inputs.Axis.x;
+            case 1: return Inputs.Axis.y;
         }
         return 0;
     }

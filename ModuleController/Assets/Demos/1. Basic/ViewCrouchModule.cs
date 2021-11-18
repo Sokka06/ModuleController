@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Demos.Demo1
 {
     /// <summary>
-    /// A simple View module. Currently just simulates crouching by scaling down the root transform.
+    /// Simulates crouching by scaling down the root transform.
     /// </summary>
     public class ViewCrouchModule : AbstractViewModule
     {
