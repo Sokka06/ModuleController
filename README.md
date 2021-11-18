@@ -1,6 +1,8 @@
 # ModuleController
 Something useful for character controllers, view controllers, audio controllers.
 
+![modulecontroller](https://user-images.githubusercontent.com/54811990/142493660-2f6a2e08-5cec-4284-9462-8664e301eb6c.png)
+
 ## Getting started
 1. Clone or download repository.
 2. Copy ModuleController from Plugins folder to your project.
