@@ -4,8 +4,12 @@ Something useful for character controllers, view controllers, audio controllers.
 ## Getting started
 1. Clone or download repository.
 2. Copy ModuleController from Plugins folder to your project.
-3. Take a look at the included Demos to see examples how you can introduce a bit more modularity into your character controllers and such.
+3. Take a look at the included Demos to see examples how you can introduce a bit more modularity into your Character Controllers and such.
 4. Done!
 
 ## How To Use
-1. 
+1. Create new scripts for your *Module Controller* (named *FooModuleController*, for example) and for your *Module base class* (named *AbstractFooModule*, for example).
+2. If your scripts are *MonoBehaviours*, you can inherit from **ModuleControllerBehaviour** and **ModuleBehaviour**, which are also *MonoBehaviours* and include all the needed boilerplate code. Alternatively you can implement **IModuleController** and **IModule** interfaces to customize your scripts more.
+3. Make new scripts for your *Modules* (named *FooBarModule, FooBazModule*, etc) and make them inherit from your *module base class*. You can override your module's *SetupModule* method and add `Debug.Log($"Hello {GetType().Name}");` to make sure they're setup correctly.
+4. Make a new *GameObject* and add your *Module Controller* and *Modules* on it.
+5. Press play!
