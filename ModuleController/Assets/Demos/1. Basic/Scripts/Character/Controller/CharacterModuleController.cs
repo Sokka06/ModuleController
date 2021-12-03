@@ -23,6 +23,8 @@ namespace Demos
     {
         public CharacterController CharacterController;
 
+        private List<AbstractCharacterModule> _modules = new List<AbstractCharacterModule>();
+
         public List<AbstractCharacterModule> Modules { get; protected set; }
         
         public Vector3 Velocity { get; private set; }
@@ -31,6 +33,8 @@ namespace Demos
         public Transform Transform => CharacterController.transform;
         public HashSet<Collider> LocalColliders { get; private set; }
         public CharacterGroundData GroundData { get; private set; }
+
+        public event Action onModulesChanged;
 
         private void OnValidate()
         {
@@ -180,6 +184,8 @@ namespace Demos
             {
                 Modules[i].SetupModule(this);
             }
+            
+            onModulesChanged?.Invoke();
         }
 
         public AbstractCharacterModule[] FindModules()

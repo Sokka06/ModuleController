@@ -16,6 +16,8 @@ namespace Sokka06.ModuleController
         public TController Controller { get; }
 
         public void SetupModule(TController controller);
+
+        public void UpdateModule(float deltaTime);
     }
 }
 

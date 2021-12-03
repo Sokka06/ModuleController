@@ -30,9 +30,9 @@ namespace Sokka06.ModuleController
         public abstract TModule[] FindModules();
 
         /// <summary>
-        /// Gets specific module.
+        /// Gets specific module for given type.
         /// </summary>
-        /// <typeparam name="T">Module class you want to get.</typeparam>
+        /// <typeparam name="T">Module type you want to get.</typeparam>
         /// <returns></returns>
         public T GetModule<T>() where T : TModule;
     }

@@ -18,6 +18,8 @@ namespace Demos
         
         private bool _jumpRequested;
 
+        public event Action onJump;
+
         public override void SetupModule(CharacterModuleController controller)
         {
             base.SetupModule(controller);
@@ -53,6 +55,7 @@ namespace Demos
                 {
                     var jumpForce = Mathf.Sqrt(Height * -2.0f * _gravityModule.Gravity);
                     Controller.AddVelocity(Vector3.up * jumpForce - Vector3.Project(Controller.Velocity, Controller.CharacterController.transform.up));
+                    onJump?.Invoke();
                 }
                 
                 _jumpRequested = false;

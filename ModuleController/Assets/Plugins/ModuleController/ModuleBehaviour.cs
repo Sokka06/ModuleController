@@ -8,8 +8,8 @@ namespace Sokka06.ModuleController
     /// Basic Module with boilerplate code.
     /// </summary>
     public abstract class ModuleBehaviour<TController, TModule> : MonoBehaviour, IModule<TController, TModule> 
-        where TController : ModuleControllerBehaviour<TController, TModule> 
-        where TModule : ModuleBehaviour<TController, TModule>
+        where TController : IModuleController<TController, TModule> 
+        where TModule : IModule<TController, TModule>
     {
         public bool Enabled = true;
         

@@ -8,8 +8,8 @@ namespace Sokka06.ModuleController
     /// Basic Module Controller with boilerplate code included.
     /// </summary>
     public abstract class ModuleControllerBehaviour<TController, TModule> : MonoBehaviour, IModuleController<TController, TModule> 
-        where TController : ModuleControllerBehaviour<TController, TModule> 
-        where TModule : ModuleBehaviour<TController, TModule>
+        where TController : MonoBehaviour, IModuleController<TController, TModule> 
+        where TModule : MonoBehaviour, IModule<TController, TModule>
     {
         public List<TModule> Modules { get; protected set; }
 
@@ -23,6 +23,10 @@ namespace Sokka06.ModuleController
             }
         }
 
+        /// <summary>
+        /// Updates all modules.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public virtual void UpdateModules(float deltaTime)
         {
             for (int i = 0; i < Modules.Count; i++)
