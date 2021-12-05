@@ -57,6 +57,13 @@ namespace Demos.Demo1
 
             return null;
         }
+
+        public int GetModules<T>(ref T[] modules) where T : AbstractViewModule
+        {
+            // Not needed this for this demo.
+            throw new System.NotImplementedException();
+        }
+
         #endregion
     }
 }

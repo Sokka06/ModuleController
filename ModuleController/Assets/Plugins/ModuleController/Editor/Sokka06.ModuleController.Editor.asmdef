@@ -1,0 +1,18 @@
+{
+    "name": "Sokka06.ModuleController.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a721fc7e391a84e4b8bb04108c116190"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

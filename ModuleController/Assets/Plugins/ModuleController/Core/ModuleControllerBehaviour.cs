@@ -55,5 +55,23 @@ namespace Sokka06.ModuleController
 
             return null;
         }
+        
+        public int GetModules<T>(ref T[] modules) where T : TModule
+        {
+            var count = 0;
+            for (int i = 0; i < Modules.Count; i++)
+            {
+                if (Modules[i] is T module)
+                {
+                    modules[count] = module;
+                    count++;
+                }
+                
+                if (count >= modules.Length)
+                    break;
+            }
+            
+            return count;
+        }
     }
 }

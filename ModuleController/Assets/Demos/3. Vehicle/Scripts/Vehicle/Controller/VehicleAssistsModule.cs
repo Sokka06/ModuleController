@@ -53,6 +53,12 @@ namespace Demos.Vehicle
 
             return null;
         }
+
+        public int GetModules<T>(ref T[] modules) where T : AbstractAssistModule
+        {
+            // Not needed this for this demo.
+            throw new System.NotImplementedException();
+        }
     }
 }
 

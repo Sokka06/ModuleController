@@ -208,6 +208,22 @@ namespace Demos
 
             return null;
         }
+
+        public int GetModules<T>(ref T[] modules) where T : AbstractCharacterModule
+        {
+            var count = 0;
+            for (int i = 0; i < Modules.Count; i++)
+            {
+                if (Modules[i] is T module)
+                {
+                    modules[count] = module;
+                    count++;
+                }
+            }
+            
+            return count;
+        }
+
         #endregion
 
         private void OnDrawGizmosSelected()
