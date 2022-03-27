@@ -16,11 +16,26 @@ namespace Demos.Common
         {
             base.SetupModule(controller);
         
+            AssignCamera(VirtualCamera);
+        }
+
+        public void AssignCamera(CinemachineVirtualCameraBase virtualCamera)
+        {
+            VirtualCamera = virtualCamera;
+            if (VirtualCamera == null)
+            {
+                _inputProvider = null;
+                return;
+            }
+            
             _inputProvider = VirtualCamera.GetComponent<PlayerInputProvider>();
         }
 
         public override void UpdateModule(float deltaTime)
         {
+            if(_inputProvider == null)
+                return;
+            
             //Camera inputs
             var axis = new Vector2();
             

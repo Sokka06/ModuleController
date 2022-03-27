@@ -1,18 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sokka06.ModuleController;
 using UnityEngine;
 
-public class AbstractAudioModule : MonoBehaviour
+namespace Demos.Vehicle
 {
-    // Start is called before the first frame update
-    void Start()
+    public class AbstractAudioModule : ModuleBehaviour<VehicleAudioController, AbstractAudioModule>
     {
-        
-    }
+        public AudioSource Source;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        protected virtual void OnValidate()
+        {
+            if (Source == null)
+                Source = GetComponent<AudioSource>();
+        }
+
+        public override void UpdateModule(float deltaTime)
+        {
+            
+        }
     }
 }

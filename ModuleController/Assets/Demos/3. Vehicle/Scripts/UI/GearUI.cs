@@ -7,14 +7,14 @@ using UnityEngine;
 
 public class GearUI : MonoBehaviour
 {
-    public VehicleController VehicleController;
     public TextMeshProUGUI GearText;
 
     private VehicleGearboxModule _gearboxModule;
 
-    private void Awake()
+    private void Start()
     {
-        _gearboxModule = VehicleController.GetModule<VehicleGearboxModule>();
+        var vehicle = FindObjectOfType<DriverManager>().CurrentDrivers[0].Vehicle;
+        _gearboxModule = vehicle.Controller.GetModule<VehicleGearboxModule>();
         _gearboxModule.Gearbox.onGearChanged += OnGearChanged;
         
         GearText.SetText(GearToText(_gearboxModule.Gearbox.CurrentGearIndex));

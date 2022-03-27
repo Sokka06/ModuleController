@@ -46,12 +46,22 @@ namespace Demos.Vehicle
                 var force = velocityDiff * BrakeFactor;*/
 
                 var velocity = Controller.Rigidbody.GetPointVelocity(wheelHit.point);
+                //if (!(velocity.sqrMagnitude > 0.1f))
+                //    continue;
+                
                 var load = BrakedWheels[i].sprungMass;
                 var force = GetBrakeForceDrag(velocity, deltaTime);
                 force = GetBrakeForce(velocity, load);
 
-                Controller.Rigidbody.AddForceAtPosition(-velocity * load * BrakeFactor * input, wheelHit.point);
+                Controller.Rigidbody.AddForceAtPosition(Vector3.ClampMagnitude(-Vector3.ProjectOnPlane(velocity, wheelHit.normal), 1f) * load * BrakeFactor * input, wheelHit.point);
             }
+        }
+
+        private Vector3 GetVelocity(Vector3 position)
+        {
+            var velocity = Controller.Rigidbody.GetPointVelocity(position);
+            var localVelocity = Controller.Transform.InverseTransformVector(velocity);
+            return velocity;
         }
 
         /// <summary>

@@ -8,21 +8,17 @@ using UnityEngine;
 public class IKModuleController : ModuleControllerBehaviour<IKModuleController, AbstractIKModule>, IAnimatorCallbacks
 {
     public CharacterModuleController Character;
-    public AnimatorListener listener;
-    
-    private void Awake()
-    {
-        SetupModules();
-    }
+    public AnimatorListener Listener;
 
     private void Start()
     {
-        listener.Register(this);
+        SetupModules();
+        Listener.Register(this);
     }
 
     private void OnDestroy()
     {
-        listener.Unregister(this);
+        Listener.Unregister(this);
     }
 
     public void AnimatorMove(float deltaTime)

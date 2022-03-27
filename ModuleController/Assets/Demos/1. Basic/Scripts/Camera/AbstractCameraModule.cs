@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using Sokka06.ModuleController;
 using UnityEngine;
 
-public abstract class AbstractCameraModule : ModuleBehaviour<CameraController, AbstractCameraModule>
+namespace Demos.Demo1
 {
-    public override void SetupModule(CameraController controller)
+    public abstract class AbstractCameraModule : ModuleBehaviour<FirstPersonCameraController, AbstractCameraModule>
     {
-        base.SetupModule(controller);
+        public override void SetupModule(FirstPersonCameraController controller)
+        {
+            base.SetupModule(controller);
+        }
     }
 }

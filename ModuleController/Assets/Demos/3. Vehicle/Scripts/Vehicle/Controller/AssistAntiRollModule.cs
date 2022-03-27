@@ -16,7 +16,7 @@ public class AssistAntiRollModule : AbstractAssistModule
         base.SetupModule(controller);
 
         _initialCenterOfMass = Controller.Controller.Rigidbody.centerOfMass;
-        Debug.Log("SETUP");
+        //Debug.Log("SETUP");
     }
 
     public override void UpdateModule(float deltaTime)

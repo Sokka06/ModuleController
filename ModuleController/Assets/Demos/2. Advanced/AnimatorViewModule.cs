@@ -43,13 +43,14 @@ namespace Demos.Demo2
         {
             base.UpdateModule(deltaTime);
 
-            var forwardDir = Controller.Character.Transform.forward;
+            /*var forwardDir = Controller.Character.Transform.forward;
             if (Controller.Character.GroundData.HasGround)
             {
                 forwardDir = -Vector3.Cross(Controller.Character.GroundData.Normal,
                     Controller.Character.Transform.right);
             }
-            var forwardSpeed = Vector3.Dot(Controller.Character.CharacterController.velocity, forwardDir);
+            var forwardSpeed = Vector3.Dot(Controller.Character.CharacterController.velocity, forwardDir);*/
+            
             Animator.SetFloat(Speed, Controller.Character.CharacterController.velocity.magnitude);
             Animator.SetFloat(MotionSpeed, _inputModule.Inputs.Move.magnitude);
             Animator.SetBool(Grounded, Controller.Character.CharacterController.isGrounded);

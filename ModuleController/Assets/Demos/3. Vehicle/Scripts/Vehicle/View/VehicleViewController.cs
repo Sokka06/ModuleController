@@ -8,7 +8,7 @@ namespace Demos.Vehicle
 {
     public class VehicleViewController : ModuleControllerBehaviour<VehicleViewController, AbstractViewModule>
     {
-        private void Awake()
+        private void Start()
         {
             SetupModules();
         }

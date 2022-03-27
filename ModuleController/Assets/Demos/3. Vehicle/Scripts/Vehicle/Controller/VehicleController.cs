@@ -40,10 +40,10 @@ namespace Demos.Vehicle
                 Wheels = new List<WheelCollider>(GetComponentsInChildren<WheelCollider>());
         }
 
-        private void Awake()
+        protected override void Awake()
         {
-            SetupModules();
-
+            base.Awake();
+            
             GroundData = new GroundData();
 
             LocalColliders = new List<Collider>(FindLocalCollider());
@@ -55,6 +55,11 @@ namespace Demos.Vehicle
                     Physics.IgnoreCollision(Wheels[i], LocalColliders[j]);
                 }
             }
+        }
+
+        private void Start()
+        {
+            SetupModules();
         }
 
         public override void SetupModules()
@@ -102,10 +107,10 @@ namespace Demos.Vehicle
             // Ignore wheel colliders
             for (int i = 0; i < allColliders.Count; i++)
             {
-                Debug.Log("Collider: " + allColliders[i].name);
+                //Debug.Log("Collider: " + allColliders[i].name);
                 if (allColliders[i] is WheelCollider)
                 {
-                    Debug.Log("Removed Wheel Collider");
+                    //Debug.Log("Removed Wheel Collider");
                     continue;
                 }
                 

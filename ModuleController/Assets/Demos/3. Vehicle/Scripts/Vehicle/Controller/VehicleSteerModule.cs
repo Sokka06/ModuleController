@@ -17,6 +17,7 @@ namespace Demos.Vehicle
         [Range(0f, 90f)]
         public float SteerAngle = 30f;
         public AnimationCurve SteerCurve = AnimationCurve.Linear(0f, 1f, 1f, 0.5f);
+        public float SteerSharpness = 10f;
         [Tooltip("Use Ackermann steering to adjust steering angle.")]
         public bool Ackermann = true;
 
@@ -38,7 +39,7 @@ namespace Demos.Vehicle
             
             var forwardSpeed = Vector3.Dot(Controller.Rigidbody.velocity, Controller.Transform.forward);
             var speedFactor = Mathf.Abs(forwardSpeed) / _driveModule.Speed;
-            var steerAngle = SteerAngle * SteerCurve.Evaluate(speedFactor) * _inputModule.Inputs.Steer;
+            var targetSteerAngle = SteerAngle * SteerCurve.Evaluate(speedFactor) * _inputModule.Inputs.Steer;
             
             // For Ackermann
             var frontAxle = Controller.Wheels[0].transform.localPosition;
@@ -53,32 +54,35 @@ namespace Demos.Vehicle
 
             for (int i = 0; i < SteeredWheels.Count; i++)
             {
+                var steerAngle = targetSteerAngle;
                 if (Ackermann)
                 {
-                    steerAngle = GetAckermann(steerAngle, wheelBase,
+                    AckermannSteer(ref steerAngle, wheelBase,
                         axleLength, SteeredWheels[i].transform.localPosition.x < 0f ? -1 : 1);
                 }
                 
-                SteeredWheels[i].steerAngle = steerAngle;
+                SteeredWheels[i].steerAngle = Mathf.Lerp(SteeredWheels[i].steerAngle, steerAngle, SteerSharpness * deltaTime);
             }
         }
         
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="steerAngle">Target steer angle</param>
-        /// <param name="wheelBase">Distance from back wheel to front wheel</param>
+        /// <param name="steerAngle">Current steer angle</param>
+        /// <param name="wheelBase">Distance from front axle to rear axle</param>
         /// <param name="width">Width of the vehicle or axle length</param>
         /// <param name="side">-1 = left wheel and 1 = right wheel. 0 = returns nothing.</param>
         /// <returns></returns>
-        public static float GetAckermann(float steerAngle, float wheelBase, float width, int side = -1)
+        public void AckermannSteer(ref float steerAngle, float wheelBase, float width, int side = 0)
         {
             if (steerAngle == 0.0f || side == 0) 
-                return 0.0f;
+                return;
+
+            var halfWidth = width * 0.5f;
+            var turnRadius = wheelBase / Mathf.Tan(Mathf.Deg2Rad * steerAngle);
+            steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelBase / (turnRadius + -side * halfWidth));
             
-            var turnRad = wheelBase / Mathf.Tan(Mathf.Deg2Rad * steerAngle);
-            
-            return Mathf.Rad2Deg * Mathf.Atan(wheelBase / (turnRad + -side * width));
+            //steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelBase / (turnRadius + -side * width));
         }
         
 #if UNITY_EDITOR
@@ -105,6 +109,7 @@ namespace Demos.Vehicle
                 
                 // Draw current steer angle.
                 Handles.DrawDottedLine(origin, origin + Quaternion.AngleAxis(SteeredWheels[i].steerAngle, up) * forward * SteeredWheels[i].radius, 1f);
+                Handles.Label(origin, $"Angle: {SteeredWheels[i].steerAngle}");
             }
         }
 #endif

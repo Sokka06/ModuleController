@@ -23,11 +23,14 @@ namespace Demos
     {
         public CharacterController CharacterController;
 
-        private List<AbstractCharacterModule> _modules = new List<AbstractCharacterModule>();
+        private Vector3 _internalVelocity;
+
+        private bool _prevIsGrounded;
+        //private List<AbstractCharacterModule> _modules = new List<AbstractCharacterModule>();
 
         public List<AbstractCharacterModule> Modules { get; protected set; }
-        
-        public Vector3 Velocity { get; private set; }
+
+        public Vector3 Velocity => _internalVelocity;
         public Quaternion Rotation { get; private set; }
 
         public Transform Transform => CharacterController.transform;
@@ -45,16 +48,22 @@ namespace Demos
 
         private void Awake()
         {
+            Modules = new List<AbstractCharacterModule>(FindModules());
+            
             LocalColliders = new HashSet<Collider>(Transform.GetComponentsInChildren<Collider>());
             GroundData = new CharacterGroundData();
 
             SetRotation(Transform.rotation);
-            
+        }
+
+        private void Start()
+        {
             SetupModules();
         }
 
         private void FixedUpdate()
         {
+            //_internalVelocity = Vector3.zero;
             var deltaTime = Time.deltaTime;
 
             var groundData = new CharacterGroundData();
@@ -68,18 +77,43 @@ namespace Demos
             }
 
             //Move and rotate character.
-            CharacterController.Move(Velocity * deltaTime);
+            //Move(_internalVelocity * deltaTime);
+            CharacterController.Move(_internalVelocity * deltaTime);
             Transform.rotation = Rotation;
+
+            if (CharacterController.isGrounded != _prevIsGrounded)
+            {
+                Debug.Log("Grounded Changed: " + CharacterController.isGrounded);
+            }
+            _prevIsGrounded = CharacterController.isGrounded;
+        }
+
+        private void Move (Vector3 motion)
+        {
+            var horizontalMotion = new Vector3(motion.x, 0.0f, motion.z);
+            var verticalMotion = new Vector3(0.0f, motion.y, 0.0f);
+            
+            CharacterController.Move(horizontalMotion);
+            CharacterController.Move(verticalMotion);
+            
+            return;
+            if (motion.y >= 0.0f) {
+                CharacterController.Move(verticalMotion);
+                CharacterController.Move(horizontalMotion);
+            } else {
+                CharacterController.Move(horizontalMotion);
+                CharacterController.Move(verticalMotion);
+            }
         }
         
         public void AddVelocity(Vector3 velocity)
         {
-            Velocity += velocity;
+            _internalVelocity += velocity;
         }
         
         public void SetVelocity(Vector3 velocity)
         {
-            Velocity = velocity;
+            _internalVelocity = velocity;
         }
 
         public void SetRotation(Quaternion rotation)
@@ -178,8 +212,6 @@ namespace Demos
         #region ModuleController
         public void SetupModules()
         {
-            Modules = new List<AbstractCharacterModule>(FindModules());
-            
             for (int i = 0; i < Modules.Count; i++)
             {
                 Modules[i].SetupModule(this);

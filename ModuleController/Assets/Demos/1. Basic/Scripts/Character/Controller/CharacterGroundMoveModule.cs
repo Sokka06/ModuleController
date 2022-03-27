@@ -50,7 +50,7 @@ namespace Demos
                 // Calculate target velocity
                 var moveRight = Vector3.Cross(moveVector, Controller.Transform.up);
                 var reorientedMoveVector = Vector3.Cross(Controller.GroundData.Normal, moveRight).normalized;
-                var targetVelocity = reorientedMoveVector * speed * _inputModule.Inputs.Move.magnitude;
+                var targetVelocity = moveVector * speed * _inputModule.Inputs.Move.magnitude;
 
                 // Smooth movement Velocity
                 Controller.SetVelocity(Vector3.Lerp(Controller.Velocity, targetVelocity, Smoothness * deltaTime));

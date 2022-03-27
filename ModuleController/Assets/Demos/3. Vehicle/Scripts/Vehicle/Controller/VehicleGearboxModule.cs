@@ -87,12 +87,16 @@ namespace Demos.Vehicle
         
         public Gearbox Gearbox { get; private set; }
 
+        private void Awake()
+        {
+            Gearbox = new Gearbox(Gears, InitialGear);
+        }
+
         public override void SetupModule(VehicleController controller)
         {
             base.SetupModule(controller);
 
             _inputModule = Controller.GetModule<VehicleInputModule>();
-            Gearbox = new Gearbox(Gears, InitialGear);
         }
 
         public override void UpdateModule(float deltaTime)

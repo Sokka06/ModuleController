@@ -54,16 +54,17 @@ namespace Demos.Demo2
 
                 if (hasTarget)
                 {
-                    Controller.listener.Animator.SetIKPositionWeight(Feet[i].IKGoal, Feet[i].PositionWeight);
-                    Controller.listener.Animator.SetIKRotationWeight(Feet[i].IKGoal, Controller.Character.CharacterController.velocity.sqrMagnitude > 1f ? 0f : Feet[i].RotationWeight);
+                    var weightMultiplier = 1f;//1f - Mathf.Clamp01(Controller.Character.CharacterController.velocity.sqrMagnitude);
+                    Controller.Listener.Animator.SetIKPositionWeight(Feet[i].IKGoal, Mathf.Clamp01(Feet[i].PositionWeight * weightMultiplier));
+                    Controller.Listener.Animator.SetIKRotationWeight(Feet[i].IKGoal, Mathf.Clamp01(Feet[i].RotationWeight * weightMultiplier));
                     
-                    Controller.listener.Animator.SetIKPosition(Feet[i].IKGoal, Feet[i].TargetPosition);
-                    Controller.listener.Animator.SetIKRotation(Feet[i].IKGoal, Feet[i].TargetRotation);
+                    Controller.Listener.Animator.SetIKPosition(Feet[i].IKGoal, Feet[i].TargetPosition);
+                    Controller.Listener.Animator.SetIKRotation(Feet[i].IKGoal, Feet[i].TargetRotation);
                 }
                 else
                 {
-                    Controller.listener.Animator.SetIKPositionWeight(Feet[i].IKGoal, 0f);
-                    Controller.listener.Animator.SetIKRotationWeight(Feet[i].IKGoal, 0f);
+                    Controller.Listener.Animator.SetIKPositionWeight(Feet[i].IKGoal, 0f);
+                    Controller.Listener.Animator.SetIKRotationWeight(Feet[i].IKGoal, 0f);
                 }
             }
         }

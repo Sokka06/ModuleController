@@ -10,10 +10,11 @@ namespace Demos.Vehicle
     {
         //0f to 1f
         public float Throttle;
-        // 0f to 1f
-        public float Brake;
         // -1 to 1f
         public float Steer;
+        // 0f to 1f
+        public float Brake;
+        public float Handbrake;
     }
 
     public class VehicleInputModule : AbstractVehicleModule

@@ -24,7 +24,7 @@ namespace Demos.Common
         public Keyboard Keyboard { get; private set; }
         public Gamepad Gamepad { get; private set; }
     
-        private void Awake()
+        private void Start()
         {
             SetupModules();
 

@@ -72,9 +72,9 @@ namespace Demos.Vehicle
             }
         }
 
-        private void OnGUI()
+        /*private void OnGUI()
         {
             GUI.Label(new Rect(0f, 0f, Screen.width, 32), $"Local Velocity {Controller.Transform.InverseTransformVector(Controller.Rigidbody.velocity)}");
-        }
+        }*/
     }
 }

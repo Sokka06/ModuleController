@@ -42,8 +42,8 @@ namespace Demos.Demo2
             
             _lookAtPosition = Vector3.Lerp(_lookAtPosition, GetLookAtPosition(), Sharpness * deltaTime);
             
-            Controller.listener.Animator.SetLookAtWeight(GetLookAtWeight());
-            Controller.listener.Animator.SetLookAtPosition(_lookAtPosition);
+            Controller.Listener.Animator.SetLookAtWeight(GetLookAtWeight());
+            Controller.Listener.Animator.SetLookAtPosition(_lookAtPosition);
         }
 
         private Vector3 GetLookAtPosition()

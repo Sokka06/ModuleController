@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,16 +8,20 @@ namespace Sokka06.ModuleController
     /// <summary>
     /// Basic Module Controller with boilerplate code included.
     /// </summary>
+    [DefaultExecutionOrder(-1)]
     public abstract class ModuleControllerBehaviour<TController, TModule> : MonoBehaviour, IModuleController<TController, TModule> 
         where TController : MonoBehaviour, IModuleController<TController, TModule> 
         where TModule : MonoBehaviour, IModule<TController, TModule>
     {
-        public List<TModule> Modules { get; protected set; }
+        public List<TModule> Modules { get; protected set; } = new List<TModule>();
+
+        protected virtual void Awake()
+        {
+            Modules = new List<TModule>(FindModules());
+        }
 
         public virtual void SetupModules()
         {
-            Modules = new List<TModule>(FindModules());
-            
             for (int i = 0; i < Modules.Count; i++)
             {
                 Modules[i].SetupModule(this as TController);
