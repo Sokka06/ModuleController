@@ -55,6 +55,8 @@ namespace Demos.Vehicle
                     Physics.IgnoreCollision(Wheels[i], LocalColliders[j]);
                 }
             }
+
+            Rigidbody.maxAngularVelocity *= 10f;
         }
 
         private void Start()

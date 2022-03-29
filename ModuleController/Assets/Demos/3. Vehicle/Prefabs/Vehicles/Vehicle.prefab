@@ -110,7 +110,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1958794066258610670
 Transform:
   m_ObjectHideFlags: 0
@@ -268,31 +268,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Wheel: {fileID: 400829969198180261}
-  SkidCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  SkidTrail: {fileID: 8541231525421312191}
+  Trail: {fileID: 8541231525421312191}
+  Threshold: 0.2
 --- !u!1 &2126141055812847127
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,11 +624,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7271d9c8d6719946ab77d0e641e629a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Enabled: 0
-  Factor: 1
-  SpeedMultiplier: 1
-  Acceleration: 15
-  Direction: 0.5
+  Enabled: 1
+  driftSpinAssist: 2
+  driftSpinSpeed: 3
+  driftSpinExponent: 2
+  autoSteerDrift: 1
+  maxDriftAngle: 70
+  driftSpinCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0.1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 10
+      value: 1
+      inSlope: 0.1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  driftPush: 3
+  straightenAssist: 1
 --- !u!1 &2126141057060685207
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,6 +799,7 @@ GameObject:
   - component: {fileID: 2126141057442553456}
   - component: {fileID: 2126141057442553459}
   - component: {fileID: 6865409079434011834}
+  - component: {fileID: 3309486345371124094}
   - component: {fileID: 2126141057442553458}
   m_Layer: 0
   m_Name: Controller
@@ -929,7 +934,7 @@ MonoBehaviour:
   PoweredWheels:
   - {fileID: 2126141056485288886}
   - {fileID: 2126141057060685201}
-  Speed: 40
+  Speed: 50
   Acceleration: 1
 --- !u!114 &2126141057442553459
 MonoBehaviour:
@@ -964,6 +969,20 @@ MonoBehaviour:
   HandbrakedWheels:
   - {fileID: 2915100642070450880}
   - {fileID: 400829969198180261}
+--- !u!114 &3309486345371124094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126141057442553460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66df26f28580fbe46a649ee2fbeec622, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  RollingResistance: 0.2
 --- !u!114 &2126141057442553458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1434,31 +1453,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Wheel: {fileID: 7022649066354855964}
-  SkidCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  SkidTrail: {fileID: 2274124267339215262}
+  Trail: {fileID: 2274124267339215262}
+  Threshold: 0.2
 --- !u!1 &3171814597082097639
 GameObject:
   m_ObjectHideFlags: 0
@@ -1475,7 +1471,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2742538454219011371
 Transform:
   m_ObjectHideFlags: 0
@@ -1768,7 +1764,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6705881446450722318
 Transform:
   m_ObjectHideFlags: 0
@@ -2198,31 +2194,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Wheel: {fileID: 1449975783235811223}
-  SkidCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  SkidTrail: {fileID: 4028336441003798750}
+  Trail: {fileID: 4028336441003798750}
+  Threshold: 0.2
 --- !u!1 &7627015286862658965
 GameObject:
   m_ObjectHideFlags: 0
@@ -2614,7 +2587,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8628832796887663775
 Transform:
   m_ObjectHideFlags: 0
@@ -2772,28 +2745,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Wheel: {fileID: 2915100642070450880}
-  SkidCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  SkidTrail: {fileID: 178693694426088000}
+  Trail: {fileID: 178693694426088000}
+  Threshold: 0.2

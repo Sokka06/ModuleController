@@ -15,6 +15,8 @@ namespace Demos.Vehicle
 
         private VehicleInputModule _inputModule;
         private VehicleGearboxModule _gearboxModule;
+        
+        public bool IsReversing { get; private set; }
 
         public override void SetupModule(VehicleController controller)
         {
@@ -26,7 +28,8 @@ namespace Demos.Vehicle
 
         public override void UpdateModule(float deltaTime)
         {
-            var input = _gearboxModule.Gearbox.GetRatio() >= 0f
+            IsReversing = _gearboxModule.Gearbox.GetRatio() < 0f;
+            var input = !IsReversing
                 ? _inputModule.Inputs.Throttle
                 : _inputModule.Inputs.Brake;
             

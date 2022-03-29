@@ -88,4 +88,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: CPU
-  AI: {fileID: 4335216561133332886}
+  RaceAI: {fileID: 4335216561133332886}

@@ -8,7 +8,7 @@ namespace Demos.Vehicle
     [Serializable]
     public class SimplifiedPacejkaParameters
     {
-        [Range(4f, 12f), Tooltip("Stiffness. Typical range: 4f-12f")]
+        [Range(0f, 25f), Tooltip("Stiffness. Typical range: 4f-12f")]
         public float Stiffness = 10f;
         [Range(1f, 2f), Tooltip("Shape. Typical range: 1f-2f")]
         public float Shape = 1.5f;

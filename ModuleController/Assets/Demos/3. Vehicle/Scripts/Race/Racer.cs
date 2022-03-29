@@ -5,17 +5,33 @@ using UnityEngine;
 
 namespace Demos.Vehicle
 {
+    public struct CheckpointData
+    {
+        public int Index;
+        public Vector2 Position;
+
+        public CheckpointData(Vector2 position, int index = -1)
+        {
+            Index = index;
+            Position = position;
+        }
+    }
+    
     public class RacerPositionData
     {
+        public Vector2 Position;
         public int CurrentLap;
+        public CheckpointData Checkpoint;
         public int CurrentCheckpoint;
         public float DistanceToNext;
 
-        public RacerPositionData(int currentLap = 0, int currentCheckpoint = -1, float distanceToNext = 0f)
+        public RacerPositionData(Vector2 position, CheckpointData checkpoint, int currentLap = 0, int currentCheckpoint = -1, float distanceToNext = 0f)
         {
+            Position = position;
             CurrentLap = currentLap;
             CurrentCheckpoint = currentCheckpoint;
             DistanceToNext = distanceToNext;
+            Checkpoint = checkpoint;
         }
     }
     
@@ -43,7 +59,7 @@ namespace Demos.Vehicle
         public Racer(AbstractDriver driver)
         {
             Driver = driver;
-            PositionData = new RacerPositionData();
+            PositionData = new RacerPositionData(new Vector2(driver.Vehicle.transform.position.x, driver.Vehicle.transform.position.z), new CheckpointData());
         }
     
         public bool HasFinished()
@@ -55,9 +71,11 @@ namespace Demos.Vehicle
         {
             onStart?.Invoke();
         }
-        
-        public void Checkpoint()
+
+        public void Checkpoint(CheckpointData checkpointData)
         {
+            PositionData.Checkpoint = checkpointData;
+            PositionData.CurrentCheckpoint = checkpointData.Index;
             onCheckpoint?.Invoke();
         }
 
@@ -83,7 +101,7 @@ namespace Demos.Vehicle
             if (compareCheckpoint != 0)
                 return -compareCheckpoint;
             
-            var compareDistance = PositionData.DistanceToNext.CompareTo(other.PositionData.DistanceToNext);
+            var compareDistance = -PositionData.DistanceToNext.CompareTo(other.PositionData.DistanceToNext);
             if (compareDistance != 0)
                 return -compareDistance;
     

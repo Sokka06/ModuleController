@@ -20,6 +20,8 @@ namespace Demos.Vehicle
     {
         public bool HasGround;
         public WheelHit Hit;
+        public Vector3 SidewaysDir;
+        public Vector3 ForwardDir;
     }
     
     [RequireComponent(typeof(WheelCollider))]
@@ -74,7 +76,7 @@ namespace Demos.Vehicle
         public float SlipAngle { get; private set; }
 
         public Vector3 Position { get; private set; }
-        public Quaternion Rotation { get; private set; }
+        public Quaternion Orientation { get; private set; }
         /// <summary>
         /// Local velocity of the wheel. Notice: X and Y are switched, so X is for Longitudinal/forward speed and Y is for Lateral/sideways speed.
         /// </summary>
@@ -83,6 +85,9 @@ namespace Demos.Vehicle
         /// Angular velocity of the wheel in radians.
         /// </summary>
         public float AngularVelocity { get; private set; }
+        
+        public float LongitudinalFrictionForce { get; private set; }
+        public float LateralFrictionForce { get; private set; }
         
         public Rigidbody Rigidbody => Collider.attachedRigidbody;
         public WheelGroundData GroundData { get; private set; }
@@ -122,7 +127,7 @@ namespace Demos.Vehicle
         private void FixedUpdate()
         {
             var deltaTime = Time.deltaTime;
-            
+
             LocalVelocity = GetLocalVelocity();
             SlipRatio = GetSlipRatio();
             SlipAngle = GetSlipAngle();
@@ -130,7 +135,7 @@ namespace Demos.Vehicle
             // Update Wheel Data
             Collider.GetWorldPose(out var pos, out var rot);
             Position = pos;
-            Rotation = rot;
+            Orientation = rot;
             var wheelData = new CustomWheelData
             {
 
@@ -141,39 +146,42 @@ namespace Demos.Vehicle
             var groundData = new WheelGroundData
             {
                 HasGround = Collider.GetGroundHit(out var wheelHit),
-                Hit = wheelHit
+                Hit = wheelHit,
+                SidewaysDir = Vector3.ProjectOnPlane(GetRight(), GroundData.Hit.normal),
+                ForwardDir = Vector3.ProjectOnPlane(GetForward(), GroundData.Hit.normal)
             };
             GroundData = groundData;
+            
+            var frictionForce = Vector3.zero;
+            var longitudinalForce = 0f;
+            var lateralForce = 0f;
 
             if (GroundData.HasGround)
             {
-                var frictionForce = Vector3.zero;
-                var longitudinalForce = 0f;
-                var lateralForce = 0f;
-                
                 //Longitudinal
                 if (LongitudinalFrictionModel != null)
                     LongitudinalFrictionModel.GetLongitudinal(this, deltaTime, out longitudinalForce);
                 
-                var forward = Vector3.ProjectOnPlane(GetForward(), GroundData.Hit.normal);
-                frictionForce += forward * longitudinalForce;
+                frictionForce += GroundData.ForwardDir * longitudinalForce;
                 
                 // Lateral
                 if (LateralFrictionModel != null)
                     LateralFrictionModel.GetLateral(this, deltaTime, out lateralForce);
 
-                var sideways = Vector3.ProjectOnPlane(GetRight(), GroundData.Hit.normal);
-                frictionForce += sideways * lateralForce;
+                frictionForce += GroundData.SidewaysDir * lateralForce;
                 
                 Rigidbody.AddForceAtPosition(frictionForce * Stiffness, wheelHit.point);
                 
-                //
+                // Experimental angular acceleration calculation from Longitudinal friction.
                 var totalTorque = 0f;
                 totalTorque += -longitudinalForce * Radius;
                 
                 var angularAcceleration = totalTorque / _inertia;
                 AngularVelocity += angularAcceleration * Mathf.Deg2Rad * deltaTime;
             }
+
+            LongitudinalFrictionForce = longitudinalForce;
+            LateralFrictionForce = lateralForce;
         }
 
         /// <summary>
@@ -208,19 +216,19 @@ namespace Demos.Vehicle
             var longitudinalSpeed = LocalVelocity.x;
             var wheelVelocity = AngularVelocity * Radius;
             
-            //just cause 4 formula
+            // just cause 4 formula
             /*var isStopped = Mathf.Abs(AngularVelocity) < Mathf.Epsilon;
             var slideSign = isStopped ? Mathf.Sign(LocalVelocity.x) : Mathf.Sign(AngularVelocity);
             var slipSpeed = (wheelVelocity - LocalVelocity.x) * slideSign;
             slipRatio = slipSpeed / Mathf.Abs(LocalVelocity.x);*/
 
-            //wikipedia formula
+            // wikipedia formula
             //slipRatio = (wheelVelocity / longitudinalSpeed) - 1f;
 
             //alternative formula
             slipRatio = (wheelVelocity - longitudinalSpeed) / longitudinalSpeed;
             
-            //formula
+            // formula
             /*
             if (longitudinalSpeed == 0 && wheelVelocity == 0) { return 0f; }//no slip present
             var a = Mathf.Max(longitudinalSpeed, wheelVelocity);
@@ -250,21 +258,22 @@ namespace Demos.Vehicle
         public Vector3 GetRight()
         {
             //return transform.localPosition.x > 0f ? Rotation * Vector3.right : Rotation * Vector3.left;
-            return Rotation * Vector3.right;
+            return Orientation * Vector3.right;
         }
 
         public Vector3 GetUp()
         {
-            return Rotation * Vector3.up;
+            return Orientation * Vector3.up;
         }
 
         public Vector3 GetForward()
         {
-            return Rotation * Vector3.forward;
+            return Orientation * Vector3.forward;
         }
 
         private void OnDrawGizmos()
         {
+            var origin = transform.position;
             var right = GetRight();
             //Gizmos.DrawRay(Position, GetRight());
 
@@ -276,9 +285,15 @@ namespace Demos.Vehicle
                 var frictionRatio = Mathf.Abs(Vector3.Dot(velocity.normalized, right));
                 //Handles.Label(transform.position, $"Friction Ratio: {frictionRatio}");
                 //Handles.Label(Position, $"Forward Slip: {GroundData.Hit.forwardSlip}\nSideways Slip: {GroundData.Hit.sidewaysSlip}");
+                
+                var deltaTime = Time.fixedDeltaTime;
+                Gizmos.color = Color.blue;
+                Gizmos.DrawRay(GroundData.Hit.point, GroundData.ForwardDir * LongitudinalFrictionForce * deltaTime);
+                Gizmos.color = Color.red;
+                Gizmos.DrawRay(GroundData.Hit.point, GroundData.SidewaysDir * LateralFrictionForce * deltaTime);
             }
             
-            Handles.Label(transform.position, $"Slip Ratio: {SlipRatio}");
+            //Handles.Label(origin, $"Slip Ratio: {SlipRatio}");
         }
 
         [ContextMenu("Calculate suspension values")]

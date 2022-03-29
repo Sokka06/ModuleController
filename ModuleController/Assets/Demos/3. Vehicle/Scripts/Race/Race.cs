@@ -36,7 +36,7 @@ namespace Demos.Vehicle
     public class Race
     {
         public RaceSettings Settings;
-        public Dictionary<AbstractDriver, Racer> Racers;
+        public List<Racer> Racers;
         public RaceStandings Standings;
         
         public RaceData Data { get; private set; }
@@ -44,7 +44,7 @@ namespace Demos.Vehicle
         public Race(RaceSettings settings)
         {
             Settings = settings;
-            Racers = new Dictionary<AbstractDriver, Racer>();
+            Racers = new List<Racer>();
             Standings = new RaceStandings();
             
             Data = new RaceData();
@@ -53,7 +53,7 @@ namespace Demos.Vehicle
         public void AddRacer(AbstractDriver driver)
         {
             var racer = new Racer(driver);
-            Racers.Add(driver, racer);
+            Racers.Add(racer);
             Standings.Add(racer);
         }
 
@@ -66,6 +66,15 @@ namespace Demos.Vehicle
         {
             if (Data.IsStarted && !Data.IsFinished)
                 Data.ElapsedTime += deltaTime;
+
+            for (int i = 0; i < Racers.Count; i++)
+            {
+                var racer = Racers[i];
+                var distance = Vector2.Distance(racer.PositionData.Checkpoint.Position, racer.PositionData.Position);
+                racer.PositionData.DistanceToNext = distance;
+            }
+            
+            Standings.Sort();
         }
 
         public void Finish()
@@ -84,8 +93,11 @@ namespace Demos.Vehicle
         /// <returns></returns>
         public Racer GetRacer(AbstractDriver driver)
         {
-            if (Racers.ContainsKey(driver)) 
-                return Racers[driver];
+            for (int i = 0; i < Racers.Count; i++)
+            {
+                if (Racers[i].Driver == driver)
+                    return Racers[i];
+            }
             
             Debug.LogWarning("Racer for Driver not found!");
             return null;

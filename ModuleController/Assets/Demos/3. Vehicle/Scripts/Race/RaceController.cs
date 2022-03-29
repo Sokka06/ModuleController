@@ -6,17 +6,44 @@ using UnityEngine;
 
 namespace Demos.Vehicle
 {
+    [Serializable]
+    public struct DriverConfig
+    {
+        public AbstractDriver Driver;
+        public Vehicle Vehicle;
+    }
+    
     public class RaceController : MonoBehaviour
     {
         public CheckpointManager CheckpointManager;
         public DriverManager DriverManager;
+        public SpawnManager SpawnManager;
+        
+        [Space]
         public RaceSettings Settings;
+        public List<DriverConfig> Drivers;
 
         public Race CurrentRace { get; private set; }
 
         public event Action<Race> onStartRace;
         public event Action<Race> onFinishRace;
         public event Action<Race> onResetRace;
+
+        private void Awake()
+        {
+            for (int i = 0; i < Drivers.Count; i++)
+            {
+                SpawnManager.GetNext().GetSpawn(out var position, out var rotation);
+                
+                var driver = Instantiate(Drivers[i].Driver, transform);
+                var vehicle = Instantiate(Drivers[i].Vehicle, position, rotation);
+                driver.Setup(vehicle);
+                
+                DriverManager.RegisterDriver((driver, vehicle));
+            }
+            
+            CreateRace(Settings, DriverManager.CurrentDrivers);
+        }
 
         private void FixedUpdate()
         {
@@ -51,8 +78,6 @@ namespace Demos.Vehicle
 
         public void StartRace()
         {
-            CreateRace(Settings, DriverManager.CurrentDrivers);
-            
             for (int i = 0; i < CheckpointManager.Checkpoints.Count; i++)
             {
                 CheckpointManager.Checkpoints[i].onCheckpoint += OnCheckpoint;
@@ -101,13 +126,15 @@ namespace Demos.Vehicle
             //on checkpoint
             if (checkpointIndex != CheckpointManager.GetNextIndex(racer.PositionData.CurrentCheckpoint))
                 return;
-            racer.PositionData.CurrentCheckpoint = checkpointIndex;
+            
+            racer.Checkpoint(new CheckpointData(new Vector2(checkpoint.transform.position.x, checkpoint.transform.position.z), checkpointIndex));
             Debug.Log($"{racer.Driver.Name} on Checkpoint {checkpointIndex}, Time: {CurrentRace.Data.ElapsedTime}");
             
             //on lap
             if (!CheckpointManager.IsLast(checkpointIndex))
                 return;
-            racer.PositionData.CurrentLap++;
+            
+            racer.Lap();
             Debug.Log($"{racer.Driver.Name} on Lap {racer.PositionData.CurrentLap}, Time: {CurrentRace.Data.ElapsedTime}");
             
             //on Finish
