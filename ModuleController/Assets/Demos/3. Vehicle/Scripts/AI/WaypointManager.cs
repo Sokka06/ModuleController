@@ -263,7 +263,7 @@ public class WaypointManager : MonoBehaviour
     /// </summary>
     /// <param name="tf"></param>
     /// <returns></returns>
-    public Vector3 Interpolate(float tf)
+    public Vector3 Interpolate(float tf, out Vector3 forward)
     {
         if (tf > 1f)
             tf %= 1f;
@@ -279,11 +279,14 @@ public class WaypointManager : MonoBehaviour
                 continue;
             
             // Reached the segment
+            forward = segment.Forward;
+            
             var startTF = currentTF - segment.TF;
             var t = Mathf.InverseLerp(startTF, currentTF, tf);
             return Vector3.Lerp(segment.Start.Position3D, segment.End.Position3D, t);
         }
 
+        forward = Vector3.zero;
         return Vector3.zero;
     }
 

@@ -250,14 +250,22 @@ namespace Demos.Vehicle
             if (!GroundData.HasGround)
                 return slipAngle;
 
-            slipAngle = Mathf.Atan2(LocalVelocity.y, Mathf.Abs(LocalVelocity.x)) * Mathf.Rad2Deg;
+            if (LocalVelocity.sqrMagnitude < 1f)
+            {
+                // Different slip angle calculation when velocity is low.
+                slipAngle = Mathf.Clamp(LocalVelocity.y, -1f, 1f) * 90f;
+            }
+            else
+            {
+                // Normal slip angle calculation.
+                slipAngle = Mathf.Atan2(LocalVelocity.y, Mathf.Abs(LocalVelocity.x)) * Mathf.Rad2Deg;
+            }
             
             return slipAngle;
         }
 
         public Vector3 GetRight()
         {
-            //return transform.localPosition.x > 0f ? Rotation * Vector3.right : Rotation * Vector3.left;
             return Orientation * Vector3.right;
         }
 
@@ -271,21 +279,10 @@ namespace Demos.Vehicle
             return Orientation * Vector3.forward;
         }
 
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
-            var origin = transform.position;
-            var right = GetRight();
-            //Gizmos.DrawRay(Position, GetRight());
-
             if (GroundData.HasGround)
             {
-                var dir = Vector3.ProjectOnPlane(right, GroundData.Hit.normal);
-                //Gizmos.DrawRay(GroundData.Hit.point, GroundData.Hit.sidewaysDir);
-                var velocity = Rigidbody.GetPointVelocity(GroundData.Hit.point);
-                var frictionRatio = Mathf.Abs(Vector3.Dot(velocity.normalized, right));
-                //Handles.Label(transform.position, $"Friction Ratio: {frictionRatio}");
-                //Handles.Label(Position, $"Forward Slip: {GroundData.Hit.forwardSlip}\nSideways Slip: {GroundData.Hit.sidewaysSlip}");
-                
                 var deltaTime = Time.fixedDeltaTime;
                 Gizmos.color = Color.blue;
                 Gizmos.DrawRay(GroundData.Hit.point, GroundData.ForwardDir * LongitudinalFrictionForce * deltaTime);
@@ -293,7 +290,7 @@ namespace Demos.Vehicle
                 Gizmos.DrawRay(GroundData.Hit.point, GroundData.SidewaysDir * LateralFrictionForce * deltaTime);
             }
             
-            //Handles.Label(origin, $"Slip Ratio: {SlipRatio}");
+            Handles.Label(transform.position, $"{LocalVelocity.sqrMagnitude}");
         }
 
         [ContextMenu("Calculate suspension values")]

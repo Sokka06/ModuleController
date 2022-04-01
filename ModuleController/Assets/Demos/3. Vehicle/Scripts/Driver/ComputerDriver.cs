@@ -10,13 +10,12 @@ namespace Demos.Vehicle
     /// </summary>
     public class ComputerDriver : AbstractDriver
     {
-        public RaceAI RaceAI;
 
         public override void Setup(Vehicle vehicle)
         {
             base.Setup(vehicle);
             
-            RaceAI.Setup(vehicle);
+            //RaceAI.Setup(vehicle);
         }
 
         private void Awake()

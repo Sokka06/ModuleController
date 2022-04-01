@@ -7,7 +7,7 @@ PhysicMaterial:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Vehicle
-  dynamicFriction: 0.5
+  dynamicFriction: 0.25
   staticFriction: 0.5
   bounciness: 0.3
   frictionCombine: 2

@@ -7,8 +7,20 @@ namespace Demos.Common
 {
     public interface ICollisionCallbacks
     {
+        /// <summary>
+        /// CollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider.
+        /// </summary>
+        /// <param name="other"></param>
         public void CollisionEnter(Collision other);
+        /// <summary>
+        /// CollisionStay is called once per frame for every collider/rigidbody that is touching rigidbody/collider.
+        /// </summary>
+        /// <param name="other"></param>
         public void CollisionStay(Collision other);
+        /// <summary>
+        /// CollisionExit is called when this collider/rigidbody has stopped touching another rigidbody/collider.
+        /// </summary>
+        /// <param name="other"></param>
         public void CollisionExit(Collision other);
     }
     

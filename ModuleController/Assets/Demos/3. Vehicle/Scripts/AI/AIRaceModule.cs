@@ -1,68 +1,58 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Demos.Vehicle
 {
-    public struct TargetData
+    public class AIRaceModule : AbstractAIModule
     {
-        public Vector3 NearestPoint;
-        public Vector3 NearestForward;
-        public Vector3 LookAheadPoint;
-        public Vector3 LookAheadForward;
-        public float Distance;
-    }
-    
-    public class RaceAI : MonoBehaviour
-    {
-        public float UpdateInterval;
         public float MaxCutDistance = 5f;
         public float LookAheadTime = 0.5f;
         
         private VehicleInputModule _inputModule;
         private VehicleSteerModule _steerModule;
         
-        public Vehicle Vehicle { get; private set; }
-        public WaypointManager WaypointManager { get; private set; }
-        //public Waypoint Target { get; private set; }
+        private float _throttleScale;
+        private float _currentTF;        
+        
         public TargetData TargetData { get; private set; }
         public TargetData PrevTargetData { get; private set; }
 
-        private float _throttleScale;
-        private float _currentTF;
-
-        public void Setup(Vehicle vehicle)
+        public override void SetupModule(DriverAIController controller)
         {
-            AssignVehicle(vehicle);
-
-            WaypointManager = FindObjectOfType<WaypointManager>();
-        }
-
-        private void Start()
-        {
+            base.SetupModule(controller);
+            
             _throttleScale = Random.Range(0.9f, 1f);
-            _currentTF = WaypointManager.GetNearestPointTF(Vehicle.Controller.Transform.position);
+            _currentTF = Controller.WaypointManager.GetNearestPointTF(Controller.Vehicle.Controller.Transform.position);
         }
 
-        public void AssignVehicle(Vehicle vehicle)
+        public override void AssignVehicle(Vehicle vehicle)
         {
-            Vehicle = vehicle;
-            if (Vehicle == null)
+            base.AssignVehicle(vehicle);
+            
+            if (vehicle == null)
             {
                 _inputModule = null;
                 _steerModule = null;
                 return;
             }
             
-            _inputModule = Vehicle.Controller.GetModule<VehicleInputModule>();
-            _steerModule = Vehicle.Controller.GetModule<VehicleSteerModule>();
+            _inputModule = vehicle.Controller.GetModule<VehicleInputModule>();
+            _steerModule = vehicle.Controller.GetModule<VehicleSteerModule>();
         }
 
-        private void FixedUpdate()
+        public override void UpdateState(float deltaTime)
         {
-            if (_inputModule == null)
+            base.UpdateState(deltaTime);
+            
+            
+        }
+
+        public override void UpdateModule(float deltaTime)
+        {
+            base.UpdateModule(deltaTime);
+            
+            if  (!Enabled || Controller.State != AIState.Race || _inputModule == null)
                 return;
 
             UpdateTarget(out var targetData);
@@ -70,24 +60,38 @@ namespace Demos.Vehicle
             TargetData = targetData;
             
             var inputs = new VehicleInputs();
-            inputs.Throttle = GetThrottle(Vehicle.transform.position);
-            inputs.Steer = GetSteer(Vehicle.transform.position);
-            inputs.Brake = GetBrake(Vehicle.transform.position);
+            inputs.Throttle = GetThrottle(Controller.Vehicle.transform.position);
+            inputs.Steer = GetSteer(Controller.Vehicle.transform.position);
+            inputs.Brake = GetBrake(Controller.Vehicle.transform.position);
 
             _inputModule.SetInputs(ref inputs);
         }
-
+        
         private void UpdateTarget(out TargetData targetData)
         {
-            var position = Vehicle.Controller.Transform.position;
+            var position = Controller.Vehicle.Controller.Transform.position;
             
-            var nearestPointTF = WaypointManager.GetNearestPointTF(position);
+            var nearestPointTF = Controller.WaypointManager.GetNearestPointTF(position);
             var lookAheadTF =
-                WaypointManager.DistanceToTF(Vehicle.Controller.Rigidbody.velocity.magnitude * LookAheadTime);
+                Controller.WaypointManager.DistanceToTF(Controller.Vehicle.Controller.Rigidbody.velocity.magnitude * LookAheadTime);
             
-            var nearestPoint = WaypointManager.Interpolate(nearestPointTF, out var nearestForward);
-            var lookAheadPoint = WaypointManager.Interpolate(nearestPointTF + lookAheadTF, out var lookAheadForward);
-            var distance = WaypointManager.TFToDistance(lookAheadTF);
+            var deltaTF = nearestPointTF - _currentTF;
+            
+            if (Mathf.Sign(deltaTF) < 0)
+            {
+                Debug.Log("<color=red>CANT GO BACK</color>");
+            }
+            var deltaDistance = Controller.WaypointManager.TFToDistance(deltaTF);
+            if (deltaDistance > MaxCutDistance)
+            {
+                Debug.Log("<color=blue>MASSIVE CUT</color>");
+            }
+            
+            _currentTF = nearestPointTF;
+            
+            var nearestPoint = Controller.WaypointManager.Interpolate(_currentTF, out var nearestForward);
+            var lookAheadPoint = Controller.WaypointManager.Interpolate(_currentTF + lookAheadTF, out var lookAheadForward);
+            var distance = Controller.WaypointManager.TFToDistance(lookAheadTF);
             
             targetData = new TargetData
             {
@@ -97,37 +101,14 @@ namespace Demos.Vehicle
                 LookAheadForward = lookAheadForward,
                 Distance = distance
             };
-
-            var deltaTF = nearestPointTF - _currentTF;
         }
-
 
         private float GetSteer(Vector3 position)
         {
             var steer = 0f;
-            
-            /*position.y = 0f;
-            target.y = 0f;
 
-            var velocity = Vehicle.Controller.Rigidbody.velocity;
-            velocity.y = 0f;
-            velocity.Normalize();
-            
-            var direction = (target - position).normalized;
-            
-            var right = Vector3.Cross(Vector3.up, velocity);
-
-            right = Vehicle.transform.right;
-            right.y = 0f;
-            right.Normalize();
-
-            var cte = GetCrossTrackError(position, WaypointManager.GetPrevious(Target.Index).Position3D,
-                Target.Position3D);
-            
-            steer = Vector3.Dot(direction, right);*/
-
-            var alpha = Vector3.SignedAngle(Vehicle.Controller.Transform.forward, (TargetData.LookAheadPoint - position).normalized, Vector3.up);
-            var wheelBase = Vector3.Distance(Vehicle.Controller.Wheels[0].transform.localPosition, Vehicle.Controller.Wheels[2].transform.localPosition);
+            var alpha = Vector3.SignedAngle(Controller.Vehicle.Controller.Transform.forward, (TargetData.LookAheadPoint - position).normalized, Vector3.up);
+            var wheelBase = Vector3.Distance(Controller.Vehicle.Controller.Wheels[0].transform.localPosition, Controller.Vehicle.Controller.Wheels[2].transform.localPosition);
 
             var radius = wheelBase * 2f * Mathf.Sin(alpha * Mathf.Deg2Rad);
             var ld = Vector3.Distance(position, TargetData.LookAheadPoint);
@@ -139,7 +120,7 @@ namespace Demos.Vehicle
 
         private float StanleySteer()
         {
-            var segment = WaypointManager.TFToSegment(_currentTF);
+            var segment = Controller.WaypointManager.TFToSegment(_currentTF);
 
             var yaw = 0f;
             var x = 0f;
@@ -156,7 +137,7 @@ namespace Demos.Vehicle
 
             yaw_diff = NormalizeAngle(yaw_diff);
 
-            var center_axle_current = Vector3.Lerp(Vehicle.Controller.Wheels[0].transform.position, Vehicle.Controller.Wheels[1].transform.position, 0.5f);
+            var center_axle_current = Vector3.Lerp(Controller.Vehicle.Controller.Wheels[0].transform.position, Controller.Vehicle.Controller.Wheels[1].transform.position, 0.5f);
             var crosstrack_error = 0f;//np.min(np.sum((center_axle_current - np.array(waypoints)[:, :2]) ** 2, axis=1));
             var yaw_cross_track = Mathf.Atan2(y - first_point_on_trajectory.y, x - first_point_on_trajectory.x);
             var yaw_diff_of_path_cross_track = NormalizeAngle(yaw_path - yaw_cross_track);
@@ -178,8 +159,8 @@ namespace Demos.Vehicle
 
         private float PurePursuitSteer(Vector3 position)
         {
-            var alpha = Vector3.SignedAngle(Vehicle.Controller.Transform.forward, (TargetData.LookAheadPoint - position).normalized, Vector3.up);
-            var wheelBase = Vector3.Distance(Vehicle.Controller.Wheels[0].transform.localPosition, Vehicle.Controller.Wheels[2].transform.localPosition);
+            var alpha = Vector3.SignedAngle(Controller.Vehicle.Controller.Transform.forward, (TargetData.LookAheadPoint - position).normalized, Vector3.up);
+            var wheelBase = Vector3.Distance(Controller.Vehicle.Controller.Wheels[0].transform.localPosition, Controller.Vehicle.Controller.Wheels[2].transform.localPosition);
 
             var radius = wheelBase * 2f * Mathf.Sin(alpha * Mathf.Deg2Rad);
             var ld = Vector3.Distance(position, TargetData.LookAheadPoint);
@@ -191,15 +172,15 @@ namespace Demos.Vehicle
         {
             var throttle = 1f;
 
-            var dot = Vector3.Dot(TargetData.NearestForward, TargetData.LookAheadForward);
-            return Mathf.Abs(dot) * 0.5f;
+            var dot = Vector3.Dot(Controller.Vehicle.Controller.Rigidbody.velocity.normalized, TargetData.LookAheadForward);
+            return dot * 0.5f;
         }
         
         private float GetBrake(Vector3 position)
         {
             var brake = 0f;
 
-            var dot = Vector3.Dot(TargetData.NearestForward, TargetData.LookAheadForward);
+            var dot = Vector3.Dot(Controller.Vehicle.Controller.Rigidbody.velocity.normalized, TargetData.LookAheadForward);
             
             /*position.y = 0f;
             target.y = 0f;
@@ -219,17 +200,18 @@ namespace Demos.Vehicle
             brake = Mathf.Abs(Vector3.Dot(direction, right));
             */
 
-            return 1f - Mathf.Abs(dot) * 0.5f;
+            return 0f;
         }
 
         private void OnDrawGizmos()
         {
             if (!Application.isPlaying)
                 return;
-            Gizmos.DrawLine(Vehicle.Controller.Transform.position, TargetData.LookAheadPoint);
+            
+            Gizmos.DrawLine(Controller.Vehicle.Controller.Transform.position, TargetData.LookAheadPoint);
         }
 
-        public float GetCrossTrackError(Vector3 position, Vector3 from, Vector3 to)
+        /*public float GetCrossTrackError(Vector3 position, Vector3 from, Vector3 to)
         {
             //The first part is the same as when we check if we have passed a waypoint
         
@@ -278,6 +260,7 @@ namespace Demos.Vehicle
             }
 
             return hasPassedWaypoint;
-        }
+        }*/
     }
 }
+

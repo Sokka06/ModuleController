@@ -31,12 +31,12 @@ public class WaypointDebugger : MonoBehaviour
         Gizmos.DrawLine(pos, nearestPoint);
 
         var nearestTF = WaypointManager.GetNearestPointTF(pos);
-        var interpolatePoint = WaypointManager.Interpolate(nearestTF);
+        var interpolatePoint = WaypointManager.Interpolate(nearestTF, out var interpolateForward);
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(pos, interpolatePoint);
 
         var lookaheadTF = WaypointManager.DistanceToTF(5f);
-        var lookaheadPoint = WaypointManager.Interpolate(nearestTF + lookaheadTF);
+        var lookaheadPoint = WaypointManager.Interpolate(nearestTF + lookaheadTF, out var lookAheadForward);
         Gizmos.DrawLine(pos, lookaheadPoint);
         
         // Test TF to distanc

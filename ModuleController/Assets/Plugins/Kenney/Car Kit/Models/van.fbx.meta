@@ -1,9 +1,44 @@
 fileFormatVersion: 2
-guid: 735571828190e5c4081c2d8bbf30905a
+guid: d92903e71fca0324d83349ea9232e485
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: _defaultMat
+    second: {fileID: 2100000, guid: 2d4adfbc50218614db4205a41a6c7372, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: carTire
+    second: {fileID: 2100000, guid: c09297c58b3f2c3478328f8d60b06c92, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lightBack
+    second: {fileID: 2100000, guid: 21d4214fcfbe9bb4ea3223c7ab8f0bfe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lightFront
+    second: {fileID: 2100000, guid: ee193cdc68b56e642ae66432e383193b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: paintBlue
+    second: {fileID: 2100000, guid: 0e45d3dda7d3ed747988903217b8c318, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: plastic
+    second: {fileID: 2100000, guid: a4ce0f0b8b4c9874f99f57d7c952073c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: window
+    second: {fileID: 2100000, guid: 1c5405a8efbc53e45b4d35534f4e47b0, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

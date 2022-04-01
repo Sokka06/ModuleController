@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4335216561133332885}
-  - component: {fileID: 4335216561133332886}
+  - component: {fileID: 4344657944798903586}
+  - component: {fileID: 3933443984416797272}
   m_Layer: 0
   m_Name: AI
   m_TagString: Untagged
@@ -31,7 +32,7 @@ Transform:
   m_Father: {fileID: 4335216561506943605}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4335216561133332886
+--- !u!114 &4344657944798903586
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,9 +41,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 4335216561133332887}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 836f60d473562b64186c88fd75909625, type: 3}
+  m_Script: {fileID: 11500000, guid: 137e299db31311a46a13e0e1ebb3ddc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Driver: {fileID: 4335216561506943606}
+  UpdateInterval: 0
+--- !u!114 &3933443984416797272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4335216561133332887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dc8990084625204091157d64692cd62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  MaxCutDistance: 5
+  LookAheadTime: 0.5
 --- !u!1 &4335216561506943607
 GameObject:
   m_ObjectHideFlags: 0
@@ -88,4 +106,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: CPU
-  RaceAI: {fileID: 4335216561133332886}
