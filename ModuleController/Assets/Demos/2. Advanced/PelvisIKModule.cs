@@ -10,12 +10,11 @@ namespace Demos.Demo2
     /// </summary>
     public class PelvisIKModule : AbstractIKModule
     {
-        public Transform Root;
+        public float HeightOffset = -0.1f;
         public float MaxDrop = 0.5f;
         public float Smoothness = 25f;
 
         private FeetIKModule _feetIKModule;
-        private Vector3 _targetLocalPosition;
         private float _height;
 
         public override void SetupModule(IKModuleController controller)
@@ -23,15 +22,17 @@ namespace Demos.Demo2
             base.SetupModule(controller);
 
             _feetIKModule = Controller.GetModule<FeetIKModule>();
+
+            _height = Controller.Character.Transform.position.y + (Controller.Character.CharacterController.height * 0.5f) + HeightOffset;
         }
 
         public override void UpdateModule(float deltaTime)
         {
-            var offset = 0f;
+            var offset = HeightOffset;
             
             for (int i = 0; i < _feetIKModule.Feet.Count; i++)
             {
-                if (!Controller.Character.GroundData.HasGround)
+                if (!Controller.Character.GroundData.HasGround || Controller.Character.Velocity.sqrMagnitude > 1f)
                     break;
                 
                 if (!_feetIKModule.Feet[i].HasTarget)
@@ -42,7 +43,6 @@ namespace Demos.Demo2
                 
                 var position = _feetIKModule.Feet[i].TargetPosition;
                 var footOffset = position.y - Controller.Listener.Animator.transform.position.y;
-                var localPosition = Root.InverseTransformPoint(position);
 
                 if (footOffset < offset)
                     offset = footOffset;
@@ -50,27 +50,10 @@ namespace Demos.Demo2
 
             //Get hips position
             var newPosition = Controller.Listener.Animator.bodyPosition;
-            //var newHeight = offset;
-            //newPosition.y += offset;
             var targetHeight = newPosition.y + offset;
             _height = Mathf.Lerp(_height, targetHeight, Smoothness * deltaTime);
             newPosition.y = _height;
             Controller.Listener.Animator.bodyPosition = newPosition;
-
-            /*var newPosition = Root.localPosition;
-            newPosition.y = lowestHeight;
-            _targetLocalPosition = newPosition;
-            Root.localPosition = _targetLocalPosition;*/
-        }
-
-        private void LateUpdate()
-        {
-            
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.DrawSphere(Root.TransformPoint(_targetLocalPosition), 0.05f);
         }
     }
 }

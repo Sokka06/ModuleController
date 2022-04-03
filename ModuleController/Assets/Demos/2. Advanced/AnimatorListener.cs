@@ -15,18 +15,13 @@ public interface IAnimatorCallbacks
 public class AnimatorListener : MonoBehaviour
 {
     public Animator Animator;
-    
-    public List<IAnimatorCallbacks> Callbacks { get; private set; }
+
+    public List<IAnimatorCallbacks> Callbacks { get; private set; } = new List<IAnimatorCallbacks>();
 
     private void OnValidate()
     {
         if (Animator == null)
             Animator = GetComponent<Animator>();
-    }
-
-    private void Awake()
-    {
-        Callbacks = new List<IAnimatorCallbacks>();
     }
 
     public void Register(IAnimatorCallbacks callbacks)

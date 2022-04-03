@@ -24,7 +24,7 @@ namespace Demos.Demo2
             SetupModules();
         }
 
-        private void LateUpdate()
+        private void Update()
         {
             UpdateModules(Time.deltaTime);
 

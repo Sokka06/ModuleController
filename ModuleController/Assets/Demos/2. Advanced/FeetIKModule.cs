@@ -54,7 +54,7 @@ namespace Demos.Demo2
 
                 if (hasTarget)
                 {
-                    var weightMultiplier = 1f;//1f - Mathf.Clamp01(Controller.Character.CharacterController.velocity.sqrMagnitude);
+                    var weightMultiplier = 1f - Mathf.Clamp01(Controller.Character.CharacterController.velocity.sqrMagnitude);
                     Controller.Listener.Animator.SetIKPositionWeight(Feet[i].IKGoal, Mathf.Clamp01(Feet[i].PositionWeight * weightMultiplier));
                     Controller.Listener.Animator.SetIKRotationWeight(Feet[i].IKGoal, Mathf.Clamp01(Feet[i].RotationWeight * weightMultiplier));
                     

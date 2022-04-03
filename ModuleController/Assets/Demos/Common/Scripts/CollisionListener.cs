@@ -30,17 +30,12 @@ namespace Demos.Common
     public class CollisionListener : MonoBehaviour
     {
         public Rigidbody Rigidbody;
-        public List<ICollisionCallbacks> Callbacks { get; private set; }
+        public List<ICollisionCallbacks> Callbacks { get; private set; } = new List<ICollisionCallbacks>();
 
         private void OnValidate()
         {
             if (Rigidbody == null)
                 Rigidbody = GetComponent<Rigidbody>();
-        }
-
-        private void Awake()
-        {
-            Callbacks = new List<ICollisionCallbacks>();
         }
 
         public void Register(ICollisionCallbacks callbacks)

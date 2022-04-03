@@ -13,7 +13,7 @@ namespace Demos.Common
             SetupModules();
         }
 
-        private void LateUpdate()
+        private void Update()
         {
             UpdateModules(Time.deltaTime);
         }

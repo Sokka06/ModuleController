@@ -55,7 +55,11 @@ namespace Demos.Demo1
         
         private Vector3 GetTargetPosition()
         {
-            var rotation = Quaternion.LookRotation(_cameraTransform.forward, CharacterController.Transform.up);
+            var forward = _cameraTransform.forward;
+            forward.y = 0f;
+            forward.Normalize();
+            
+            var rotation = Quaternion.LookRotation(forward, CharacterController.Transform.up);
             var offset = rotation * GetTotalOffset();
             return CharacterController.Transform.position + (CharacterController.Transform.up * Height) + offset;
         }
