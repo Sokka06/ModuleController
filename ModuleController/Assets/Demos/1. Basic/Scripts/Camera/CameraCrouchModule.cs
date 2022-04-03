@@ -13,7 +13,6 @@ namespace Demos.Demo1
         private CharacterCrouchModule _crouchModule;
         
         private bool _prevIsCrouching;
-        private float _initialHeight;
 
         private float _startHeight;
         private float _targetHeight;
@@ -25,8 +24,8 @@ namespace Demos.Demo1
             
             _crouchModule = Controller.CharacterController.GetModule<CharacterCrouchModule>();
 
-            _initialHeight = Controller.Height;
-            SetCrouch(_initialHeight, _initialHeight);
+            //_initialHeight = Controller.Height;
+            //SetCrouch(_initialHeight, _initialHeight);
         }
 
         public override void UpdateModule(float deltaTime)
@@ -37,12 +36,13 @@ namespace Demos.Demo1
             if (_crouchModule.IsCrouching && !_prevIsCrouching)
             {
                 //Started crouching
-                SetCrouch(Controller.Height, CrouchHeight);
+                var target = CrouchHeight - Controller.Height;
+                SetCrouch(Offset.y, target);
             }
             else if (!_crouchModule.IsCrouching && _prevIsCrouching)
             {
                 //Stopped crouching
-                SetCrouch(Controller.Height, _initialHeight);
+                SetCrouch(Offset.y, 0f);
             }
             
             UpdateCrouch(deltaTime);
@@ -59,7 +59,10 @@ namespace Demos.Demo1
             }
             
             var t = _crouchTimer / duration;
-            Controller.Height = Mathf.Lerp(_startHeight, _targetHeight, t);
+
+            var offset = Vector3.zero;
+            offset.y = Mathf.Lerp(_startHeight, _targetHeight, t);
+            Offset = offset;
         }
 
         private void SetCrouch(float start, float target)

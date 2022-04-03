@@ -77,14 +77,9 @@ namespace Demos
             }
 
             //Move and rotate character.
-            //Move(_internalVelocity * deltaTime);
             CharacterController.Move(_internalVelocity * deltaTime);
             Transform.rotation = Rotation;
 
-            if (CharacterController.isGrounded != _prevIsGrounded)
-            {
-                Debug.Log("Grounded Changed: " + CharacterController.isGrounded);
-            }
             _prevIsGrounded = CharacterController.isGrounded;
         }
 

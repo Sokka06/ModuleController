@@ -664,7 +664,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3799865571120689621}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 833afd7d45bd24445b3e27ab6de7fd5b, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
@@ -1514,7 +1514,7 @@ MonoBehaviour:
   SteeredWheels:
   - {fileID: 3855711105516427999}
   - {fileID: 3855711103866762488}
-  SteerAngle: 30
+  SteerAngle: 33
   SteerCurve:
     serializedVersion: 2
     m_Curve:
@@ -1539,7 +1539,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  SteerSharpness: 15
+  SteerSharpness: 10
   Ackermann: 1
 --- !u!114 &3855711104592555797
 MonoBehaviour:

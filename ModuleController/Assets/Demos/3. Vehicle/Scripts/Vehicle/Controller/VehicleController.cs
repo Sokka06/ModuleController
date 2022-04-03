@@ -56,7 +56,7 @@ namespace Demos.Vehicle
                 }
             }
 
-            Rigidbody.maxAngularVelocity *= 10f;
+            Rigidbody.maxAngularVelocity *= 5f;
         }
 
         private void Start()

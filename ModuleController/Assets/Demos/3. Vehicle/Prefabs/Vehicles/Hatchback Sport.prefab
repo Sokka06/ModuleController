@@ -1528,7 +1528,7 @@ GameObject:
   - component: {fileID: 2126141057792420404}
   - component: {fileID: 2126141057792420406}
   m_Layer: 0
-  m_Name: Vehicle
+  m_Name: Hatchback Sport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

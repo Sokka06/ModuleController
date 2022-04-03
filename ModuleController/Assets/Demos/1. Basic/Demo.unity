@@ -2771,6 +2771,7 @@ GameObject:
   m_Component:
   - component: {fileID: 982185210}
   - component: {fileID: 982185213}
+  - component: {fileID: 982185215}
   - component: {fileID: 982185214}
   - component: {fileID: 982185211}
   - component: {fileID: 982185212}
@@ -2851,7 +2852,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.778831, y: 1}
+    m_SensorSize: {x: 1.7784946, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2873,6 +2874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterController: {fileID: 1105574275}
+  HeadHeight: 0.1
 --- !u!114 &982185214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2888,6 +2890,68 @@ MonoBehaviour:
   Enabled: 1
   CrouchHeight: 0.9
   CrouchDuration: 0.2
+--- !u!114 &982185215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982185208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3baa0941caaa36a49b0fef23b8b8e77f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  HorizontalCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  VerticalCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: -0.2
+      inSlope: -0.6362671
+      outSlope: -0.6362671
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.020955563
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  Sharpness: 10
 --- !u!43 &1035911831
 Mesh:
   m_ObjectHideFlags: 0
@@ -3070,7 +3134,6 @@ GameObject:
   - component: {fileID: 1105574280}
   - component: {fileID: 1105574279}
   - component: {fileID: 1105574283}
-  - component: {fileID: 1105574284}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -3221,21 +3284,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Enabled: 1
   Drag: 0.1
---- !u!114 &1105574284
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1105574273}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 006ef2ca38378da40bb6693c85f9b474, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Enabled: 0
-  AlignMode: 0
-  Sharpness: 10
 --- !u!1 &1181563679
 GameObject:
   m_ObjectHideFlags: 0
