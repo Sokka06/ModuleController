@@ -8,8 +8,11 @@ namespace Tests
 {
     public class TestModuleController : ModuleControllerBehaviour<TestModuleController, AbstractTestModule>
     {
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
+            // Usually called on Start.
             SetupModules();
         }
 

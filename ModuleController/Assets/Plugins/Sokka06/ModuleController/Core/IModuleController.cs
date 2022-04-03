@@ -19,7 +19,7 @@ namespace Sokka06.ModuleController
         public List<TModule> Modules { get; }
 
         /// <summary>
-        /// Setups modules, e.g. populate Modules list with FindModules and call SetupModule on them. Recommended to be called in Start.
+        /// Setups modules, e.g. populate Modules list with FindModules and call SetupModule on them. Recommended to be called in Start after Modules list is populated.
         /// </summary>
         public void SetupModules();
 
