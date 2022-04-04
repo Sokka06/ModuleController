@@ -73,7 +73,7 @@ namespace Demos.Vehicle
             
             var nearestPointTF = Controller.WaypointManager.GetNearestPointTF(position);
             var lookAheadTF =
-                Controller.WaypointManager.DistanceToTF(Controller.Vehicle.Controller.Rigidbody.velocity.magnitude * LookAheadTime);
+                Controller.WaypointManager.DistanceToTF(Mathf.Max(Controller.Vehicle.Controller.Rigidbody.velocity.magnitude * LookAheadTime, 1f));
             
             var deltaTF = nearestPointTF - _currentTF;
             

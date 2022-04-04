@@ -9,6 +9,7 @@ namespace Demos.Vehicle
     {
         public VehicleController Controller;
         public AbstractDriver Driver { get; private set; }
+        public bool IsFrozen { get; private set; }
 
         public event Action onDriverChanged;
 
@@ -22,6 +23,20 @@ namespace Demos.Vehicle
         {
             Driver = driver;
             onDriverChanged?.Invoke();
+        }
+
+        public void SetFreeze(bool freeze)
+        {
+            if (freeze)
+            {
+                Controller.Rigidbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationY;
+            }
+            else
+            {
+                Controller.Rigidbody.constraints = RigidbodyConstraints.None;
+            }
+
+            IsFrozen = freeze;
         }
     }
 }

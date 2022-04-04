@@ -8,6 +8,7 @@ public class WheelSkid : MonoBehaviour
 {
     public CustomWheel Wheel;
     public TrailRenderer Trail;
+    public ParticleSystem Smoke;
     [Range(0f, 1f)]
     public float Threshold = 0.2f;
 
@@ -20,9 +21,25 @@ public class WheelSkid : MonoBehaviour
         if (Wheel.GroundData.HasGround)
         {
             skid = Mathf.Abs(Wheel.GroundData.Hit.sidewaysSlip);
-            Trail.transform.position = Wheel.GroundData.Hit.point + Wheel.GroundData.Hit.normal * 0.05f;
+            var position = Wheel.GroundData.Hit.point + Wheel.GroundData.Hit.normal * 0.05f;
+            Trail.transform.position = position;
+            Smoke.transform.position = position;
         }
 
         Trail.emitting = skid > Threshold;
+
+        if (skid > Threshold)
+        {
+            Trail.emitting = true;
+            if (!Smoke.isPlaying)
+                Smoke.Play();
+        }
+        else
+        {
+            Trail.emitting = false;
+            
+            if (Smoke.isPlaying)
+                Smoke.Stop();
+        }
     }
 }

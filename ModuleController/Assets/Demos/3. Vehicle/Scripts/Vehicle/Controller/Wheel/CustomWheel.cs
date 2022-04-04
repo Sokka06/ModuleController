@@ -173,6 +173,7 @@ namespace Demos.Vehicle
                 Rigidbody.AddForceAtPosition(frictionForce * Stiffness, wheelHit.point);
                 
                 // Experimental angular acceleration calculation from Longitudinal friction.
+                // TODO: Add rolling resistance, otherwise wheels go nuts when near 0 angular velocity.
                 var totalTorque = 0f;
                 totalTorque += -longitudinalForce * Radius;
                 
@@ -299,8 +300,8 @@ namespace Demos.Vehicle
             // Spring Rate = vehicle mass / number of wheels * 2 * gravity / suspension distance
             // Damper Rate = Spring Rate / 20
             var gravity = Physics.gravity.magnitude;
-            if (Rigidbody.GetComponent<CustomGravity>() != null)
-                gravity = Mathf.Abs(Rigidbody.GetComponent<CustomGravity>().Gravity);
+            /*if (Rigidbody.GetComponent<CustomGravity>() != null)
+                gravity = Mathf.Abs(Rigidbody.GetComponent<CustomGravity>().Gravity);*/
             var mass = Rigidbody.mass;
             var wheelCount = Rigidbody.GetComponentsInChildren<WheelCollider>().Length;
             
