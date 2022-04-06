@@ -5,81 +5,101 @@ using UnityEngine;
 
 namespace Demos.Vehicle
 {
-    /*public enum RacerState
-    {
-        Inactive,
-        Active,
-        DNF
-    }
-
     public enum RaceState
     {
         Initial,
-        Countdown,
         Started,
         Finished
-    }*/
-
+    }
+    
     [Serializable]
-    public class RaceSettings
+    public struct RaceSettings
     {
-        public int Laps = 1;
+        public int Laps;
+
+        public RaceSettings(int laps = 2)
+        {
+            Laps = laps;
+        }
     }
 
     public class RaceData
     {
-        public bool IsStarted = false;
-        public bool IsFinished = false;
         public float ElapsedTime = 0f;
+        public RaceState State = RaceState.Initial;
     }
 
     public class Race
     {
-        public RaceSettings Settings;
-        public List<Racer> Racers;
-        public RaceStandings Standings;
+        public readonly RaceSettings Settings;
+        public readonly List<Racer> Racers;
+        public readonly List<Checkpoint> Checkpoints;
+        public readonly RaceStandings Standings;
         
         public RaceData Data { get; private set; }
+
+        public event Action<(RaceState prevState, RaceState newState)> onStateChanged; 
 
         public Race(RaceSettings settings)
         {
             Settings = settings;
-            Racers = new List<Racer>();
-            Standings = new RaceStandings();
             
+            Racers = new List<Racer>();
+            Checkpoints = new List<Checkpoint>();
+            Standings = new RaceStandings();
             Data = new RaceData();
         }
-
-        public void AddRacer(AbstractDriver driver)
+        
+        /// <summary>
+        /// Adds driver to race.
+        /// </summary>
+        /// <param name="driver"></param>
+        public Racer AddRacer(AbstractDriver driver)
         {
-            var racer = new Racer(driver);
+            var racer = new Racer(this, driver);
             Racers.Add(racer);
             Standings.Add(racer);
+            
+            return racer;
         }
 
+        /// <summary>
+        /// Starts race.
+        /// </summary>
         public void Start()
         {
-            Data.IsStarted = true;
+            for (int i = 0; i < Racers.Count; i++)
+            {
+                Racers[i].Start();
+            }
+            SetState(RaceState.Started);
         }
 
+        /// <summary>
+        /// Updates race.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public void Update(float deltaTime)
         {
-            if (Data.IsStarted && !Data.IsFinished)
-                Data.ElapsedTime += deltaTime;
+            if (Data.State != RaceState.Started)
+                return;
+                
+            Data.ElapsedTime += deltaTime;
 
             for (int i = 0; i < Racers.Count; i++)
             {
-                var racer = Racers[i];
-                var distance = Vector2.Distance(racer.PositionData.Checkpoint.Position, racer.PositionData.Position);
-                racer.PositionData.DistanceToNext = distance;
+                Racers[i].Update(deltaTime);
             }
             
             Standings.Sort();
         }
 
+        /// <summary>
+        /// Finish race.
+        /// </summary>
         public void Finish()
         {
-            Data.IsFinished = true;
+            SetState(RaceState.Finished);
         }
 
         public void Reset()
@@ -101,6 +121,13 @@ namespace Demos.Vehicle
             
             Debug.LogWarning("Racer for Driver not found!");
             return null;
+        }
+
+        private void SetState(RaceState state)
+        {
+            var prevState = Data.State;
+            Data.State = state;
+            onStateChanged?.Invoke((prevState, state));
         }
     }
 }

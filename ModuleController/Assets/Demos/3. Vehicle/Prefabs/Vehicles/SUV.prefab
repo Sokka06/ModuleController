@@ -1117,7 +1117,7 @@ MonoBehaviour:
   SteeredWheels:
   - {fileID: 1964071435952661970}
   - {fileID: 1964071437122079733}
-  SteerAngle: 30
+  SteerAngle: 33
   SteerCurve:
     serializedVersion: 2
     m_Curve:
@@ -1157,11 +1157,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Enabled: 1
-  InitialGear: 2
   Gears:
   - Ratio: -0.5
   - Ratio: 0
   - Ratio: 1
+  InitialGear: 2
   ShiftTime: 0.1
   AutoReverse: 1
 --- !u!114 &1964071436874305556
@@ -1228,7 +1228,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Enabled: 1
-  RollingResistance: 0.2
+  RollingResistance: 0.25
 --- !u!114 &1964071436874305558
 MonoBehaviour:
   m_ObjectHideFlags: 0

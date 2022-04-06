@@ -18,7 +18,7 @@ MonoBehaviour:
     Peak: 1
     Curvature: 0.97
   LateralParameters:
-    Stiffness: 2
-    Shape: 1.997
-    Peak: 1.3
-    Curvature: 0.97
+    Stiffness: 0.05
+    Shape: 1.3
+    Peak: 1
+    Curvature: 0.98

@@ -71,14 +71,13 @@ namespace Demos.Vehicle
     public class VehicleGearboxModule : AbstractVehicleModule
     {
         [Header("Gearbox")]
-        public int InitialGear = 1;
         public List<Gear> Gears = new List<Gear>
         {
             new Gear(-0.5f), 
             new Gear(0f), 
             new Gear(1f),
         };
-
+        public int InitialGear = 1;
         public float ShiftTime = 0.1f;
         public bool AutoReverse = true;
 

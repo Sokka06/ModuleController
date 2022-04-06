@@ -45,7 +45,7 @@ namespace Demos.Vehicle
             CreateRace(Settings, DriverManager.CurrentDrivers);
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             CurrentRace?.Update(Time.deltaTime);
         }
@@ -65,13 +65,15 @@ namespace Demos.Vehicle
         public void CreateRace(RaceSettings settings, List<(AbstractDriver, Vehicle)> drivers)
         {
             //initialize race
-            var race = new Race (settings);
+            var race = new Race(settings);
 
             //create racers from drivers
             for (int i = 0; i < drivers.Count; i++)
             {
-                race.AddRacer(drivers[i].Item1);
+                var racer = race.AddRacer(drivers[i].Item1);
             }
+
+            race.Checkpoints.AddRange(CheckpointManager.Checkpoints);
 
             CurrentRace = race;
         }
@@ -104,11 +106,6 @@ namespace Demos.Vehicle
             CurrentRace.Reset();
             onResetRace?.Invoke(CurrentRace);
         }
-        
-        private void OnStart(Racer racer)
-        {
-            
-        }
 
         /// <summary>
         /// Called when a driver hits a checkpoint.
@@ -118,16 +115,16 @@ namespace Demos.Vehicle
         {
             var racer = CurrentRace.GetRacer(vehicle.Driver);
             
-            if (racer.HasFinished())
+            if (racer.State == RacerState.Finished)
                 return;
             
             CheckpointManager.GetIndex(checkpoint, out var checkpointIndex);
 
             //on checkpoint
-            if (checkpointIndex != CheckpointManager.GetNextIndex(racer.PositionData.CurrentCheckpoint))
+            if (checkpointIndex != racer.CheckpointData.Index)
                 return;
             
-            racer.Checkpoint(new CheckpointData(new Vector2(checkpoint.transform.position.x, checkpoint.transform.position.z), checkpointIndex));
+            racer.Checkpoint();
             Debug.Log($"{racer.Driver.Name} on Checkpoint {checkpointIndex}, Time: {CurrentRace.Data.ElapsedTime}");
             
             //on lap
@@ -135,23 +132,14 @@ namespace Demos.Vehicle
                 return;
             
             racer.Lap();
-            Debug.Log($"{racer.Driver.Name} on Lap {racer.PositionData.CurrentLap}, Time: {CurrentRace.Data.ElapsedTime}");
+            Debug.Log($"{racer.Driver.Name} on Lap {racer.LapData.Lap}, Time: {CurrentRace.Data.ElapsedTime}");
             
             //on Finish
-            if (racer.PositionData.CurrentLap < CurrentRace.Settings.Laps)
+            if (racer.LapData.Lap < CurrentRace.Settings.Laps)
                 return;
-            racer.Finish(new RacerFinishData{Time = CurrentRace.Data.ElapsedTime});
+            
+            racer.Finish();
             Debug.Log($"{racer.Driver.Name} on Finish {racer.FinishData}s.");
-        }
-
-        private void OnLap(Racer racer)
-        {
-            
-        }
-        
-        private void OnFinish(Racer racer)
-        {
-            
         }
     }
 }

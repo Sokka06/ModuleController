@@ -1558,11 +1558,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Enabled: 1
-  InitialGear: 2
   Gears:
   - Ratio: -0.5
   - Ratio: 0
   - Ratio: 1
+  InitialGear: 2
   ShiftTime: 0.1
   AutoReverse: 1
 --- !u!114 &3855711104592555801
@@ -1581,8 +1581,8 @@ MonoBehaviour:
   PoweredWheels:
   - {fileID: 3855711105516427999}
   - {fileID: 3855711103866762488}
-  Speed: 40
-  Acceleration: 1
+  Speed: 45
+  Acceleration: 0.5
 --- !u!114 &3855711104592555802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1629,7 +1629,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Enabled: 1
-  RollingResistance: 0.2
+  RollingResistance: 0.25
 --- !u!114 &3855711104592555803
 MonoBehaviour:
   m_ObjectHideFlags: 0

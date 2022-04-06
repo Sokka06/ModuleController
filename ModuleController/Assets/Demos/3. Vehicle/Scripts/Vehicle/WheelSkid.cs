@@ -31,7 +31,7 @@ public class WheelSkid : MonoBehaviour
         if (skid > Threshold)
         {
             Trail.emitting = true;
-            if (!Smoke.isPlaying)
+            if (!Smoke.isEmitting)
                 Smoke.Play();
         }
         else

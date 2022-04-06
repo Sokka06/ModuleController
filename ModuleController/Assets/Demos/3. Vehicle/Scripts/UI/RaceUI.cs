@@ -53,7 +53,7 @@ namespace Demos.Vehicle
 
         private void OnRacerLap()
         {
-            SetLap(_racer.PositionData.CurrentLap, _raceController.CurrentRace.Settings.Laps);
+            SetLap(_racer.LapData.Lap, _raceController.CurrentRace.Settings.Laps);
         }
         
         private void OnRacerFinish()

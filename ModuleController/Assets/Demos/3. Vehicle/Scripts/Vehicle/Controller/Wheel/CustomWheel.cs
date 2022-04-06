@@ -248,12 +248,12 @@ namespace Demos.Vehicle
         {
             var slipAngle = 0f;
 
-            if (!GroundData.HasGround)
+            if (!GroundData.HasGround || Mathf.Abs(LocalVelocity.y) <= 0.01f)
                 return slipAngle;
 
-            if (LocalVelocity.sqrMagnitude < 1f)
+            if (LocalVelocity.sqrMagnitude < 0.1f)
             {
-                // Different slip angle calculation when velocity is low.
+                // Alternative slip angle calculation when velocity is low.
                 slipAngle = Mathf.Clamp(LocalVelocity.y, -1f, 1f) * 90f;
             }
             else
@@ -262,6 +262,8 @@ namespace Demos.Vehicle
                 slipAngle = Mathf.Atan2(LocalVelocity.y, Mathf.Abs(LocalVelocity.x)) * Mathf.Rad2Deg;
             }
             
+            //slipAngle = Mathf.Atan2(LocalVelocity.y, Mathf.Abs(LocalVelocity.x)) * Mathf.Rad2Deg;
+
             return slipAngle;
         }
 

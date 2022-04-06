@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8132749141681732214}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.083, y: 0, z: -0.607}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -116,7 +116,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 3
       scalar: 1
-      minScalar: 0.25
+      minScalar: 0.1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -221,8 +221,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 1, g: 1, b: 1, a: 0.2509804}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.49803922}
+      minColor: {r: 1, g: 1, b: 1, a: 0.5019608}
+      maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -284,8 +284,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1
-      minScalar: 0.3
+      scalar: 0.5
+      minScalar: 0.25
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -600,7 +600,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 1000
+    maxNumParticles: 500
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -659,7 +659,7 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 16
+    type: 0
     angle: 10
     length: 5
     boxThickness: {x: 0.1, y: 0.1, z: 0.1}
@@ -918,7 +918,7 @@ ParticleSystem:
     rateOverDistance:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 10
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -975,34 +975,34 @@ ParticleSystem:
     curve:
       serializedVersion: 2
       minMaxState: 2
-      scalar: 1
+      scalar: 2
       minScalar: 0.75
       maxCurve:
         serializedVersion: 2
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0.18041229
-          inSlope: 13.31703
-          outSlope: 13.31703
-          tangentMode: 34
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 0.031185556
-          value: 0.5957113
-          inSlope: 1.8995644
-          outSlope: 1.8995644
+          value: 0.063827515
+          inSlope: 0.53422767
+          outSlope: 0.53422767
           tangentMode: 0
           weightedMode: 0
-          inWeight: 0.33333334
+          inWeight: 0
+          outWeight: 0.3634923
+        - serializedVersion: 3
+          time: 0.6026196
+          value: 0.88297844
+          inSlope: 3.2176764
+          outSlope: 3.2176764
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.33737758
           outWeight: 0.023046752
         - serializedVersion: 3
           time: 1
-          value: 0.4896927
-          inSlope: -0.10943128
-          outSlope: -0.10943128
+          value: 0
+          inSlope: -2.221998
+          outSlope: -2.221998
           tangentMode: 34
           weightedMode: 0
           inWeight: 0.33333334
@@ -1015,7 +1015,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0.31723213
+          value: 0.11702128
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -1023,8 +1023,8 @@ ParticleSystem:
           inWeight: 0.33333334
           outWeight: 0.33333334
         - serializedVersion: 3
-          time: 0.012829632
-          value: 0.48478848
+          time: 0.49377906
+          value: 0.72340584
           inSlope: 1.4048237
           outSlope: 1.4048237
           tangentMode: 0
@@ -1033,7 +1033,7 @@ ParticleSystem:
           outWeight: 0.1182192
         - serializedVersion: 3
           time: 1
-          value: 0.32989502
+          value: 0
           inSlope: -1.5064268
           outSlope: -1.5064268
           tangentMode: 0
@@ -1338,7 +1338,7 @@ ParticleSystem:
         ctime6: 0
         ctime7: 0
         atime0: 0
-        atime1: 9830
+        atime1: 16384
         atime2: 32768
         atime3: 65535
         atime4: 0
@@ -1367,7 +1367,7 @@ ParticleSystem:
         ctime6: 0
         ctime7: 0
         atime0: 0
-        atime1: 3277
+        atime1: 9830
         atime2: 47031
         atime3: 65535
         atime4: 0

@@ -41,10 +41,10 @@ namespace Demos.Vehicle
             longitudinal = SimplifiedFormula(
                 wheel.GroundData.Hit.force,
                 wheel.SlipRatio,
-                LateralParameters.Stiffness,
-                LateralParameters.Shape,
-                LateralParameters.Peak,
-                LateralParameters.Curvature);
+                LongitudinalParameters.Stiffness,
+                LongitudinalParameters.Shape,
+                LongitudinalParameters.Peak,
+                LongitudinalParameters.Curvature);
         }
 
         public override void GetLateral(CustomWheel wheel, float deltaTime, out float lateral)
@@ -53,7 +53,7 @@ namespace Demos.Vehicle
             var slip = wheel.SlipAngle / 90f;
             lateral = -SimplifiedFormula(
                 wheel.GroundData.Hit.force,
-                slip,
+                wheel.SlipAngle,
                 LateralParameters.Stiffness,
                 LateralParameters.Shape,
                 LateralParameters.Peak,
