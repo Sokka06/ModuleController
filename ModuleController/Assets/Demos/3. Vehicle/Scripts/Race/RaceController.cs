@@ -47,7 +47,22 @@ namespace Demos.Vehicle
 
         private void Update()
         {
-            CurrentRace?.Update(Time.deltaTime);
+            if (!(CurrentRace is { State: RaceState.Started }))
+                return;
+
+            var deltaTime = Time.deltaTime;
+
+            // Update racers
+            for (int i = 0; i < CurrentRace.Racers.Count; i++)
+            {
+                var racer = CurrentRace.Racers[i];
+                racer.SetCurrentLapTime(racer.GetCurrentLapTime() + deltaTime);
+                racer.SetDistance(GetDistanceToCheckpoint(racer, CheckpointManager.Checkpoints[racer.CheckpointData.Index]));
+            }
+            
+            // Update race
+            CurrentRace.SetRaceTime(CurrentRace.GetRaceTime() + deltaTime);
+            CurrentRace.UpdateStandings();
         }
 
         private void OnDestroy()
@@ -71,9 +86,8 @@ namespace Demos.Vehicle
             for (int i = 0; i < drivers.Count; i++)
             {
                 var racer = race.AddRacer(drivers[i].Item1);
+                racer.SetDistance(GetDistanceToCheckpoint(racer, CheckpointManager.Checkpoints[0]));
             }
-
-            race.Checkpoints.AddRange(CheckpointManager.Checkpoints);
 
             CurrentRace = race;
         }
@@ -115,6 +129,7 @@ namespace Demos.Vehicle
         {
             var racer = CurrentRace.GetRacer(vehicle.Driver);
             
+            // Ignore if racer has already finished.
             if (racer.State == RacerState.Finished)
                 return;
             
@@ -124,22 +139,30 @@ namespace Demos.Vehicle
             if (checkpointIndex != racer.CheckpointData.Index)
                 return;
             
-            racer.Checkpoint();
-            Debug.Log($"{racer.Driver.Name} on Checkpoint {checkpointIndex}, Time: {CurrentRace.Data.ElapsedTime}");
+            racer.SetCheckpoint(CheckpointManager.GetNextIndex(checkpointIndex), GetDistanceToCheckpoint(racer, checkpoint));
+            Debug.Log($"{racer.Driver.Name} on Checkpoint {checkpointIndex}, Time: {CurrentRace.Data.Time}");
             
             //on lap
             if (!CheckpointManager.IsLast(checkpointIndex))
                 return;
             
-            racer.Lap();
-            Debug.Log($"{racer.Driver.Name} on Lap {racer.LapData.Lap}, Time: {CurrentRace.Data.ElapsedTime}");
+            racer.AddLap();
+            Debug.Log($"{racer.Driver.Name} on Lap {racer.LapData.Lap}, Time: {CurrentRace.Data.Time}");
             
             //on Finish
             if (racer.LapData.Lap < CurrentRace.Settings.Laps)
                 return;
             
-            racer.Finish();
+            racer.Finish(CurrentRace.Data.Time);
             Debug.Log($"{racer.Driver.Name} on Finish {racer.FinishData}s.");
+        }
+
+        public float GetDistanceToCheckpoint(Racer racer, Checkpoint checkpoint)
+        {
+            // TODO: Use race line to calculate a more accurate distance.
+            var distance = Vector2.Distance(new Vector2(racer.Driver.Vehicle.Controller.Transform.position.x,racer.Driver.Vehicle.Controller.Transform.position.z),
+                new Vector2(checkpoint.transform.position.x, checkpoint.transform.position.z));
+            return distance;
         }
     }
 }

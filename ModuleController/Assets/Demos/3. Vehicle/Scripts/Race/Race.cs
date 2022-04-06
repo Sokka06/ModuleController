@@ -25,27 +25,28 @@ namespace Demos.Vehicle
 
     public class RaceData
     {
-        public float ElapsedTime = 0f;
-        public RaceState State = RaceState.Initial;
+        public float Time;
     }
 
     public class Race
     {
         public readonly RaceSettings Settings;
         public readonly List<Racer> Racers;
-        public readonly List<Checkpoint> Checkpoints;
         public readonly RaceStandings Standings;
         
         public RaceData Data { get; private set; }
+        public RaceState State { get; private set; }
 
+        public event Action onStart;
+        public event Action onFinish;
         public event Action<(RaceState prevState, RaceState newState)> onStateChanged; 
 
         public Race(RaceSettings settings)
         {
             Settings = settings;
+            State = RaceState.Initial;
             
             Racers = new List<Racer>();
-            Checkpoints = new List<Checkpoint>();
             Standings = new RaceStandings();
             Data = new RaceData();
         }
@@ -73,24 +74,32 @@ namespace Demos.Vehicle
                 Racers[i].Start();
             }
             SetState(RaceState.Started);
+            onStart?.Invoke();
         }
 
         /// <summary>
-        /// Updates race.
+        /// Sets race total time.
         /// </summary>
-        /// <param name="deltaTime"></param>
-        public void Update(float deltaTime)
+        /// <param name="time"></param>
+        public void SetRaceTime(float time)
         {
-            if (Data.State != RaceState.Started)
-                return;
-                
-            Data.ElapsedTime += deltaTime;
+            Data.Time = time;
+        }
 
-            for (int i = 0; i < Racers.Count; i++)
-            {
-                Racers[i].Update(deltaTime);
-            }
-            
+        /// <summary>
+        /// Returns race total time.
+        /// </summary>
+        /// <returns></returns>
+        public float GetRaceTime()
+        {
+            return Data.Time;
+        }
+
+        /// <summary>
+        /// Sorts racer standings.
+        /// </summary>
+        public void UpdateStandings()
+        {
             Standings.Sort();
         }
 
@@ -100,11 +109,16 @@ namespace Demos.Vehicle
         public void Finish()
         {
             SetState(RaceState.Finished);
+            onFinish?.Invoke();
         }
 
         public void Reset()
         {
             Data = new RaceData();
+            for (int i = 0; i < Racers.Count; i++)
+            {
+                Racers[i].Reset();
+            }
         }
         
         /// <summary>
@@ -125,8 +139,8 @@ namespace Demos.Vehicle
 
         private void SetState(RaceState state)
         {
-            var prevState = Data.State;
-            Data.State = state;
+            var prevState = State;
+            State = state;
             onStateChanged?.Invoke((prevState, state));
         }
     }

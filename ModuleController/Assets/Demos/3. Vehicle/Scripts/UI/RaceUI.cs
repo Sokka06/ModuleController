@@ -66,7 +66,7 @@ namespace Demos.Vehicle
         {
             //SetLap(_racer.PositionData.CurrentLap, _raceController.CurrentRace.Settings.Laps);
             if (!_hasFinished)
-                SetTime(_raceController.CurrentRace.Data.ElapsedTime);
+                SetTime(_raceController.CurrentRace.Data.Time);
         }
 
         private void SetTime(float time)

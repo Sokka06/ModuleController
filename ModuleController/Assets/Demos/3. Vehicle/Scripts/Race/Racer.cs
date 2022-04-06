@@ -5,40 +5,27 @@ using UnityEngine;
 
 namespace Demos.Vehicle
 {
-    public struct RacerCheckpointData
+    
+    public enum RacerState
+    {
+        Initial,
+        Started,
+        Finished
+    }
+    
+    public class RacerCheckpointData
     {
         public int Index;
-        public Vector2 Position;
+        public float Distance;
 
-        public RacerCheckpointData(int index, Vector2 position)
+        public RacerCheckpointData(int index, float distance)
         {
             Index = index;
-            Position = position;
+            Distance = distance;
         }
     }
-    
-    public class RacerPositionData
-    {
-        public Vector2 Position;
-        public Vector2 Target;
-        public float DistanceToNext;
 
-        public RacerPositionData()
-        {
-            Position = Vector2.zero;
-            Target = Vector2.zero;
-            DistanceToNext = 0f;
-        }
-
-        public void UpdatePosition(Vector2 position, Vector2 target)
-        {
-            Position = position;
-            Target = target;
-            DistanceToNext = Vector2.Distance(Position, Target);
-        }
-    }
-    
-    public struct RacerFinishData
+    public class RacerFinishData
     {
         public float Time;
     
@@ -58,26 +45,13 @@ namespace Demos.Vehicle
             Lap = 0;
             Times = new List<float> { 0f };
         }
-
-        public void AddLap()
-        {
-            Times.Add(0f);
-            Lap++;
-        }
     }
 
-    public enum RacerState
-    {
-        Initial,
-        Started,
-        Finished
-    }
-    
     public class Racer : IComparable<Racer>
     {
-        public Race Race { get; private set; }
-        public AbstractDriver Driver { get; private set; }
-        public RacerPositionData PositionData { get; private set; }
+        public readonly Race Race;
+        public readonly AbstractDriver Driver;
+        
         public RacerCheckpointData CheckpointData { get; private set; }
         public RacerLapData LapData { get; private set; }
         public RacerFinishData FinishData { get; private set; }
@@ -93,47 +67,87 @@ namespace Demos.Vehicle
         {
             Race = race;
             Driver = driver;
-            State = RacerState.Initial;
-            CheckpointData = new RacerCheckpointData();
-            PositionData = new RacerPositionData();
-            LapData = new RacerLapData();
+            
+            Reset();
         }
 
+        /// <summary>
+        /// Starts race for racer.
+        /// </summary>
         public void Start()
         {
-            CheckpointData = new RacerCheckpointData(0,
-                new Vector2(Race.Checkpoints[0].transform.position.x, Race.Checkpoints[0].transform.position.z));
             SetState(RacerState.Started);
             onStart?.Invoke();
         }
-
-        public void Update(float deltaTime)
+        
+        /// <summary>
+        /// Sets current lap time.
+        /// </summary>
+        /// <param name="time"></param>
+        public void SetCurrentLapTime(float time)
         {
-            LapData.Times[LapData.Lap] += deltaTime;
-            PositionData.UpdatePosition(new Vector2(Driver.Vehicle.Controller.Transform.position.x, Driver.Vehicle.Controller.Transform.position.z), CheckpointData.Position);
+            LapData.Times[LapData.Lap] = time;
+        }
+        
+        /// <summary>
+        /// Returns current lap time.
+        /// </summary>
+        /// <returns></returns>
+        public float GetCurrentLapTime()
+        {
+            return LapData.Times[LapData.Lap];
         }
 
-        public void Checkpoint()
+        /// <summary>
+        /// Sets checkpoint index and distance.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="distance"></param>
+        public void SetCheckpoint(int index, float distance)
         {
-            var nextCheckpointIndex = CheckpointData.Index + 1;
-            nextCheckpointIndex = nextCheckpointIndex % Race.Checkpoints.Count;
-            CheckpointData = new RacerCheckpointData(nextCheckpointIndex, new Vector2(Race.Checkpoints[nextCheckpointIndex].transform.position.x, Race.Checkpoints[nextCheckpointIndex].transform.position.z));
+            CheckpointData.Index = index;
+            CheckpointData.Distance = distance;
             onCheckpoint?.Invoke();
         }
 
-        public void Lap()
+        /// <summary>
+        /// Sets distance to current checkpoint.
+        /// </summary>
+        /// <param name="distance"></param>
+        public void SetDistance(float distance)
         {
-            LapData.AddLap();
+            CheckpointData.Distance = distance;
+        }
+
+        /// <summary>
+        /// Adds new lap.
+        /// </summary>
+        public void AddLap()
+        {
+            LapData.Times.Add(0f);
+            LapData.Lap++;
             onLap?.Invoke();
         }
-    
-        public void Finish()
+        
+        /// <summary>
+        /// Finishes race for racer.
+        /// </summary>
+        /// <param name="time"></param>
+        public void Finish(float time)
         {
-            FinishData = new RacerFinishData{Time = Race.Data.ElapsedTime};
+            FinishData = new RacerFinishData{Time = time};
             SetState(RacerState.Finished);
             onFinish?.Invoke();
         }
-        
+
+        public void Reset()
+        {
+            CheckpointData = new RacerCheckpointData(0, 0f);
+            LapData = new RacerLapData();
+            FinishData = new RacerFinishData();
+            State = RacerState.Initial;
+        }
+
         public int CompareTo(Racer other)
         {
             var result = 0;
@@ -164,8 +178,7 @@ namespace Demos.Vehicle
                 return result;
             
             // Compare distance to next checkpoint
-            // TODO: Use race line to calculate more accurate distance
-            result = PositionData.DistanceToNext.CompareTo(other.PositionData.DistanceToNext);
+            result = CheckpointData.Distance.CompareTo(other.CheckpointData.Distance);
             if (result != 0)
                 return result;
             
