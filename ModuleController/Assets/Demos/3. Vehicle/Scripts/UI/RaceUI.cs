@@ -37,21 +37,21 @@ namespace Demos.Vehicle
 
         private void Start()
         {
-            var driver = _driverManager.CurrentDrivers[0].Driver;
-            _racer = _raceController.CurrentRace.GetRacer(driver);
-            OnRacerLap();
+            // Assumes first racer is the player.
+            _racer = _raceController.CurrentRace.Racers[0];
+            UpdateLap();
             
-            _racer.onLap += OnRacerLap;
+            _racer.onLap += UpdateLap;
             _racer.onFinish += OnRacerFinish;
         }
 
         private void OnDestroy()
         {
-            _racer.onLap -= OnRacerLap;
+            _racer.onLap -= UpdateLap;
             _racer.onFinish -= OnRacerFinish;
         }
 
-        private void OnRacerLap()
+        private void UpdateLap()
         {
             SetLap(_racer.LapData.Lap, _raceController.CurrentRace.Settings.Laps);
         }
@@ -64,40 +64,18 @@ namespace Demos.Vehicle
 
         private void LateUpdate()
         {
-            //SetLap(_racer.PositionData.CurrentLap, _raceController.CurrentRace.Settings.Laps);
             if (!_hasFinished)
                 SetTime(_raceController.CurrentRace.Data.Time);
         }
 
         private void SetTime(float time)
         {
-            TimeText.SetText(FormatTime(time, NumberSpacing, DividerSpacing));
+            TimeText.SetText(time.FormatTime(NumberSpacing, DividerSpacing));
         }
 
         private void SetLap(int current, int total)
         {
             LapText.SetText($"Lap {Mathf.Min(current + 1, total)}<size=50%>/{total}</size>");
-        }
-        
-        public string FormatTime(float time, float numberSpacing, float dividerSpacing)
-        {
-            var timespan = TimeSpan.FromSeconds(time);
-            var tenth = Mathf.Floor(timespan.Milliseconds * 0.1f);
-
-            var builder = new StringBuilder();
-            builder.Append($"<mspace={numberSpacing}px>{timespan.Minutes:00}</mspace>");
-            builder.Append($"<mspace={dividerSpacing}px>:</mspace>");
-            builder.Append($"<mspace={numberSpacing}px>{timespan.Seconds:00}</mspace>");
-            builder.Append($"<mspace={dividerSpacing}px>,</mspace>");
-            builder.Append($"<mspace={numberSpacing}px>{tenth:00}</mspace>");
-
-            return builder.ToString();
-
-            /*return $"<mspace={numberSpacing}px>{timespan.Minutes:00}</mspace>" +
-                   $"<mspace={dividerSpacing}px>:</mspace>" +
-                   $"<mspace={numberSpacing}px>{timespan.Seconds:00}</mspace>" +
-                   $"<mspace={dividerSpacing}px>:</mspace>" +
-                   $"<mspace={numberSpacing}px>{tenth:00}</mspace>";*/
         }
     }
 }

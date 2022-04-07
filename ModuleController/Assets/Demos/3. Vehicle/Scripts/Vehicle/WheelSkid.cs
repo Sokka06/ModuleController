@@ -20,13 +20,11 @@ public class WheelSkid : MonoBehaviour
 
         if (Wheel.GroundData.HasGround)
         {
-            skid = Mathf.Abs(Wheel.GroundData.Hit.sidewaysSlip);
+            skid = Mathf.Abs(Wheel.SlipAngle) / 90f;
             var position = Wheel.GroundData.Hit.point + Wheel.GroundData.Hit.normal * 0.05f;
             Trail.transform.position = position;
             Smoke.transform.position = position;
         }
-
-        Trail.emitting = skid > Threshold;
 
         if (skid > Threshold)
         {

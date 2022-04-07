@@ -289,7 +289,7 @@ MonoBehaviour:
   Wheel: {fileID: 5293656776677745013}
   Trail: {fileID: 4002821748845265143}
   Smoke: {fileID: 8610567918808399107}
-  Threshold: 0.2
+  Threshold: 0.333
 --- !u!1 &2602301524901110715
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,7 +573,7 @@ MonoBehaviour:
   Wheel: {fileID: 3284151550693037772}
   Trail: {fileID: 6812576268209543638}
   Smoke: {fileID: 8792141328979984402}
-  Threshold: 0.2
+  Threshold: 0.333
 --- !u!1 &3799865571120689621
 GameObject:
   m_ObjectHideFlags: 0
@@ -2311,7 +2311,7 @@ MonoBehaviour:
   Wheel: {fileID: 4331609200578283262}
   Trail: {fileID: 2298006183030735287}
   Smoke: {fileID: 5840494975200565711}
-  Threshold: 0.2
+  Threshold: 0.333
 --- !u!1 &5831804277395442983
 GameObject:
   m_ObjectHideFlags: 0
@@ -2360,7 +2360,7 @@ MonoBehaviour:
   Wheel: {fileID: 33541985485153193}
   Trail: {fileID: 3060607315496842025}
   Smoke: {fileID: 2322573469414968373}
-  Threshold: 0.2
+  Threshold: 0.333
 --- !u!1 &6811993799801637614
 GameObject:
   m_ObjectHideFlags: 0

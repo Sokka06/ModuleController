@@ -45,7 +45,7 @@ namespace Demos.Vehicle
             CreateRace(Settings, DriverManager.CurrentDrivers);
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (!(CurrentRace is { State: RaceState.Started }))
                 return;
@@ -100,7 +100,6 @@ namespace Demos.Vehicle
             }
 
             CurrentRace.Start();
-            
             onStartRace?.Invoke(CurrentRace);
         }
 
@@ -153,8 +152,8 @@ namespace Demos.Vehicle
             if (racer.LapData.Lap < CurrentRace.Settings.Laps)
                 return;
             
-            racer.Finish(CurrentRace.Data.Time);
-            Debug.Log($"{racer.Driver.Name} on Finish {racer.FinishData}s.");
+            racer.Finish(racer.GetTotalLapTime());
+            Debug.Log($"{racer.Driver.Name} on Finish {racer.FinishData}s. Time: {CurrentRace.Data.Time}");
         }
 
         public float GetDistanceToCheckpoint(Racer racer, Checkpoint checkpoint)

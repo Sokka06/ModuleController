@@ -38,12 +38,13 @@ namespace Demos.Vehicle
     public class RacerLapData
     {
         public int Lap;
+        public float Time;
         public readonly List<float> Times;
 
         public RacerLapData()
         {
             Lap = 0;
-            Times = new List<float> { 0f };
+            Times = new List<float>();
         }
     }
 
@@ -86,7 +87,7 @@ namespace Demos.Vehicle
         /// <param name="time"></param>
         public void SetCurrentLapTime(float time)
         {
-            LapData.Times[LapData.Lap] = time;
+            LapData.Time = time;
         }
         
         /// <summary>
@@ -95,7 +96,41 @@ namespace Demos.Vehicle
         /// <returns></returns>
         public float GetCurrentLapTime()
         {
-            return LapData.Times[LapData.Lap];
+            return LapData.Time;
+        }
+
+        /// <summary>
+        /// Returns best lap time from lap times.
+        /// </summary>
+        /// <returns></returns>
+        public float GetBestLapTime()
+        {
+            if (!(LapData.Times.Count > 0))
+                return 0f;
+            
+            var bestTime = float.MaxValue;
+            for (int i = 0; i < LapData.Times.Count; i++)
+            {
+                if (LapData.Times[i] < bestTime)
+                    bestTime = LapData.Times[i];
+            }
+
+            return bestTime;
+        }
+
+        /// <summary>
+        /// Calculates total time from lap times.
+        /// </summary>
+        /// <returns></returns>
+        public float GetTotalLapTime()
+        {
+            var time = LapData.Time;
+            for (int i = 0; i < LapData.Times.Count; i++)
+            {
+                time += LapData.Times[i];
+            }
+
+            return time;
         }
 
         /// <summary>
@@ -124,8 +159,9 @@ namespace Demos.Vehicle
         /// </summary>
         public void AddLap()
         {
-            LapData.Times.Add(0f);
             LapData.Lap++;
+            LapData.Times.Add(LapData.Time);
+            LapData.Time = 0f;
             onLap?.Invoke();
         }
         
@@ -150,7 +186,7 @@ namespace Demos.Vehicle
 
         public int CompareTo(Racer other)
         {
-            var result = 0;
+            int result;
             
             if (State == RacerState.Finished && other.State == RacerState.Finished)
             {

@@ -15,7 +15,7 @@ namespace Demos.Vehicle
             var raceController = FindObjectOfType<RaceController>();
             // Assuming first racer is the player.
             var standing = raceController.CurrentRace.Standings.GetStanding(raceController.CurrentRace.Racers[0]);
-            FinishText.SetText($"You finished in\n{StandingToText(standing)} place!");
+            FinishText.SetText($"Finished {ColorText(StandingToText(standing), StandingToColor(standing))}!");
         }
 
         private string StandingToText(int standing)
@@ -31,6 +31,26 @@ namespace Demos.Vehicle
                 default:
                     return $"{standing}th";
             }
+        }
+
+        private string StandingToColor(int standing)
+        {
+            switch (standing)
+            {
+                case 1:
+                    return "yellow";
+                case 2:
+                    return "grey";
+                case 3:
+                    return "lightblue";
+                default:
+                    return "white";
+            }
+        }
+
+        private string ColorText(string text, string color)
+        {
+            return $"<color={color}>{text}</color>";
         }
     }
 }
