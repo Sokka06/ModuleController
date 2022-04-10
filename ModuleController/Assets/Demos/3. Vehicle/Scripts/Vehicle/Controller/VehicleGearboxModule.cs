@@ -26,14 +26,11 @@ namespace Demos.Vehicle
         
         public List<Gear> Gears { get; private set; }
         public int CurrentGearIndex { get; private set; }
-        
-        public bool Clutch { get; private set; }
 
         public Gearbox(List<Gear> gears, int initialGear = 0)
         {
             Gears = gears;
             CurrentGearIndex = Mathf.Clamp(initialGear, 0, gears.Count - 1);
-            Clutch = false;
         }
 
         public void ShiftGear(int dir)
@@ -55,11 +52,6 @@ namespace Demos.Vehicle
             
             CurrentGearIndex = index;
             onGearChanged?.Invoke(CurrentGearIndex);
-        }
-
-        public void SetClutch(bool on)
-        {
-            Clutch = on;
         }
 
         public float GetRatio()

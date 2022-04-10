@@ -124,9 +124,18 @@ namespace Demos.Vehicle
             _inverseRadius = 1f / Radius;
         }
 
-        private void FixedUpdate()
+        // Updated by Vehicle Controller.
+        /*private void FixedUpdate()
         {
             var deltaTime = Time.deltaTime;
+            UpdateWheel(deltaTime);
+        }*/
+
+        public void UpdateWheel(float deltaTime)
+        {
+            // Weird bug fix
+            Collider.motorTorque = 0.00001f;
+            //Collider.brakeTorque = 0.00001f;
 
             LocalVelocity = GetLocalVelocity();
             SlipRatio = GetSlipRatio();
@@ -160,13 +169,13 @@ namespace Demos.Vehicle
             {
                 //Longitudinal
                 if (LongitudinalFrictionModel != null)
-                    LongitudinalFrictionModel.GetLongitudinal(this, deltaTime, out longitudinalForce);
+                    LongitudinalFrictionModel.GetLongitudinal(GroundData.Hit.force, SlipRatio, deltaTime, out longitudinalForce);
                 
                 frictionForce += GroundData.ForwardDir * longitudinalForce;
                 
                 // Lateral
                 if (LateralFrictionModel != null)
-                    LateralFrictionModel.GetLateral(this, deltaTime, out lateralForce);
+                    LateralFrictionModel.GetLateral(GroundData.Hit.force, SlipAngle, deltaTime, out lateralForce);
 
                 frictionForce += GroundData.SidewaysDir * lateralForce;
                 
@@ -302,8 +311,6 @@ namespace Demos.Vehicle
             // Spring Rate = vehicle mass / number of wheels * 2 * gravity / suspension distance
             // Damper Rate = Spring Rate / 20
             var gravity = Physics.gravity.magnitude;
-            /*if (Rigidbody.GetComponent<CustomGravity>() != null)
-                gravity = Mathf.Abs(Rigidbody.GetComponent<CustomGravity>().Gravity);*/
             var mass = Rigidbody.mass;
             var wheelCount = Rigidbody.GetComponentsInChildren<WheelCollider>().Length;
             

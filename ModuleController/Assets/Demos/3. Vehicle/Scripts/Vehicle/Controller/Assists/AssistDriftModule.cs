@@ -49,22 +49,14 @@ public class AssistDriftModule : AbstractAssistModule
 
     public override void UpdateModule(float deltaTime)
     {
-        if(!Enabled || !Controller.Controller.GroundData.IsGrounded || !(Controller.Controller.Rigidbody.velocity.sqrMagnitude > 0f))
+        var velocitySqrMag = Controller.Controller.Velocity.sqrMagnitude;
+        
+        if(!Enabled || !Controller.Controller.GroundData.IsGrounded || !(velocitySqrMag > 0f))
             return;
 
-        var groundedFactor = 0f;
-
-        var invFactor = 1f / Controller.Controller.Wheels.Count;
-        for (int i = 0; i < Controller.Controller.Wheels.Count; i++)
-        {
-            if (Controller.Controller.Wheels[i].isGrounded)
-                groundedFactor += invFactor;
-        }
-        
-        var localVelocity =
-            Controller.Controller.Transform.InverseTransformVector(Controller.Controller.Rigidbody.velocity);
+        var localVelocity = Controller.Controller.LocalVelocity;
         var localAngularVelocity =
-            Controller.Controller.Transform.InverseTransformVector(Controller.Controller.Rigidbody.angularVelocity);
+            Controller.Controller.Transform.InverseTransformVector(Controller.Controller.AngularVelocity);
 
         // Get desired rotation speed
         var targetTurnSpeed = 0f;
@@ -87,12 +79,12 @@ public class AssistDriftModule : AbstractAssistModule
         }
 
         Controller.Controller.Rigidbody.AddRelativeTorque(
-            new Vector3(0, (targetTurnSpeed - localAngularVelocity.y) * driftSpinAssist * driftSpinCurve.Evaluate(Mathf.Abs(Mathf.Pow(localVelocity.x, driftSpinExponent))) * groundedFactor, 0),
+            new Vector3(0, (targetTurnSpeed - localAngularVelocity.y) * driftSpinAssist * driftSpinCurve.Evaluate(Mathf.Abs(Mathf.Pow(localVelocity.x, driftSpinExponent))) * Controller.Controller.GroundData.Factor, 0),
             ForceMode.Acceleration);
 
-        var rightVelDot = Vector3.Dot(Controller.Controller.Transform.right, Controller.Controller.Rigidbody.velocity.normalized);
+        var rightVelDot = Vector3.Dot(Controller.Controller.Transform.right, Controller.Controller.Velocity.normalized);
 
-        if (straightenAssist && _inputModule.Inputs.Steer == 0 && Mathf.Abs(rightVelDot) < 0.1f && Controller.Controller.Rigidbody.velocity.sqrMagnitude > 5) {
+        if (straightenAssist && _inputModule.Inputs.Steer == 0 && Mathf.Abs(rightVelDot) < 0.1f && velocitySqrMag > 5) {
             Controller.Controller.Rigidbody.AddRelativeTorque(
                 new Vector3(0, rightVelDot * 100 * Mathf.Sign(localVelocity.z) * driftSpinAssist, 0),
                 ForceMode.Acceleration);

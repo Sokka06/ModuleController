@@ -4,31 +4,34 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
-public class DollyMaker : MonoBehaviour
+namespace Demos.Vehicle
 {
-    public WaypointManager WaypointManager;
-
-    private void OnValidate()
+    public class DollyMaker : MonoBehaviour
     {
-        if (WaypointManager != null)
+        public WaypointManager WaypointManager;
+
+        private void OnValidate()
         {
-            var dollyTrack = GetComponent<CinemachineSmoothPath>();
-            var waypoints = new CinemachineSmoothPath.Waypoint[WaypointManager.Waypoints.Count];
-            for (int i = 0; i < waypoints.Length; i++)
+            if (WaypointManager != null)
             {
-                waypoints[i] = PointToWaypoint(WaypointManager.Waypoints[i].transform.position);
+                var dollyTrack = GetComponent<CinemachineSmoothPath>();
+                var waypoints = new CinemachineSmoothPath.Waypoint[WaypointManager.Points.Count];
+                for (int i = 0; i < waypoints.Length; i++)
+                {
+                    waypoints[i] = PointToWaypoint(WaypointManager.Points[i].transform.position);
+                }
+                dollyTrack.m_Waypoints = waypoints;
+
+                WaypointManager = null;
             }
-            dollyTrack.m_Waypoints = waypoints;
-
-            WaypointManager = null;
         }
-    }
 
-    private CinemachineSmoothPath.Waypoint PointToWaypoint(Vector3 point)
-    {
-        return new CinemachineSmoothPath.Waypoint
+        private CinemachineSmoothPath.Waypoint PointToWaypoint(Vector3 point)
         {
-            position = point
-        };
+            return new CinemachineSmoothPath.Waypoint
+            {
+                position = point
+            };
+        }
     }
 }

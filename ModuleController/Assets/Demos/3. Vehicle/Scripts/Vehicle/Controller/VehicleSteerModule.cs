@@ -37,28 +37,17 @@ namespace Demos.Vehicle
             if (!Enabled)
                 return;
             
-            var forwardSpeed = Vector3.Dot(Controller.Rigidbody.velocity, Controller.Transform.forward);
+            var forwardSpeed = Vector3.Dot(Controller.Velocity, Controller.Transform.forward);
             var speedFactor = Mathf.Abs(forwardSpeed) / _driveModule.Speed;
             var targetSteerAngle = SteerAngle * SteerCurve.Evaluate(speedFactor) * _inputModule.Inputs.Steer;
-            
-            // For Ackermann
-            var frontAxle = Controller.Wheels[0].transform.localPosition;
-            frontAxle.x = 0f;
-            
-            var rearAxle = Controller.Wheels[2].transform.localPosition;
-            rearAxle.x = 0f;
-
-            var wheelBase = Vector3.Distance(frontAxle, rearAxle);
-            var axleLength = Vector3.Distance(SteeredWheels[0].transform.localPosition,
-                SteeredWheels[1].transform.localPosition);
 
             for (int i = 0; i < SteeredWheels.Count; i++)
             {
                 var steerAngle = targetSteerAngle;
                 if (Ackermann)
                 {
-                    AckermannSteer(ref steerAngle, wheelBase,
-                        axleLength, SteeredWheels[i].transform.localPosition.x < 0f ? -1 : 1);
+                    AckermannSteer(ref steerAngle, Controller.Frame.Length,
+                        Controller.Frame.Width, SteeredWheels[i].transform.localPosition.x < 0f ? -1 : 1);
                 }
                 
                 SteeredWheels[i].steerAngle = Mathf.Lerp(SteeredWheels[i].steerAngle, steerAngle, SteerSharpness * deltaTime);

@@ -59,6 +59,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Enabled: 1
+  SteerValues:
+    Kp: 2
+    Ki: 0
+    Kd: 0.5
   MaxCutDistance: 5
   LookAheadTime: 0.5
 --- !u!1 &4335216561506943607

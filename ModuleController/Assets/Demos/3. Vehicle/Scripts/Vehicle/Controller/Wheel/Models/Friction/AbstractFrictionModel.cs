@@ -15,7 +15,7 @@ namespace Demos.Vehicle
         /// <param name="wheel"></param>
         /// <param name="deltaTime"></param>
         /// <param name="longitudinal"></param>
-        public virtual void GetLongitudinal(CustomWheel wheel, float deltaTime, out float longitudinal)
+        public virtual void GetLongitudinal(float load, float slip, float deltaTime, out float longitudinal)
         {
             longitudinal = 0f;
         }
@@ -26,7 +26,7 @@ namespace Demos.Vehicle
         /// <param name="wheel"></param>
         /// <param name="deltaTime"></param>
         /// <param name="lateral"></param>
-        public virtual void GetLateral(CustomWheel wheel, float deltaTime, out float lateral)
+        public virtual void GetLateral(float load, float slip, float deltaTime, out float lateral)
         {
             lateral = 0f;
         }

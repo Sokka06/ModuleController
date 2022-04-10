@@ -23,7 +23,7 @@ namespace Demos.Vehicle
             if (!Enabled || !Controller.GroundData.IsGrounded || _inputModule.Inputs.Throttle > 0f || !(RollingResistance > 0f))
                 return;
 
-            var localVelocity = Controller.Transform.InverseTransformVector(Controller.Rigidbody.velocity);
+            var localVelocity = Controller.LocalVelocity;
             var localTargetVelocity = new Vector3(localVelocity.x, localVelocity.y, localVelocity.z * (1f / (1f + (RollingResistance * deltaTime))));
             var localVelocityDiff = localTargetVelocity - localVelocity;
             

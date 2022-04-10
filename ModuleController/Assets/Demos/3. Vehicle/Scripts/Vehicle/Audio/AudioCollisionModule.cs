@@ -34,7 +34,7 @@ namespace Demos.Vehicle
         public void CollisionEnter(Collision other)
         {
             var impulse = (other.impulse).magnitude * _invFixedDeltaTime;
-            var mass = Controller.VehicleController.Rigidbody.mass;
+            var mass = Controller.VehicleController.Mass;
             var min = MinImpulse * mass * _invFixedDeltaTime;
             var max = MaxImpulse * mass * _invFixedDeltaTime;
             

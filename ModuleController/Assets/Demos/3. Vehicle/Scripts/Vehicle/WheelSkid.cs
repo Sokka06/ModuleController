@@ -12,10 +12,8 @@ public class WheelSkid : MonoBehaviour
     [Range(0f, 1f)]
     public float Threshold = 0.2f;
 
-
     private void Update()
     {
-        
         var skid = 0f;
 
         if (Wheel.GroundData.HasGround)

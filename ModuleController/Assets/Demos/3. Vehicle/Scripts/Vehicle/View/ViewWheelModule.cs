@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-
 namespace Demos.Vehicle
 {
     /// <summary>
@@ -44,7 +43,7 @@ namespace Demos.Vehicle
 
             if (Collider.isGrounded)
             {
-                // Longitudinal friction is not used to rotate the wheel,
+                // Longitudinal friction is not used to add angular velocity to the wheel collider,
                 // so we have to calculate Angular velocity from forward velocity in order to roll the wheel along the ground.
                 var forwardVelocity = Vector3.Dot(Collider.attachedRigidbody.velocity,
                     Collider.attachedRigidbody.transform.forward);
@@ -59,9 +58,6 @@ namespace Demos.Vehicle
             
             _rollRotation *= Quaternion.AngleAxis(_angularVelocity * Mathf.Rad2Deg * deltaTime, Vector3.right);
             Root.localRotation *= _rollRotation;
-
-            //Root.position = position + Root.TransformVector(_offset);
-            //Root.rotation = rotation;
         }
 
         private void OnDrawGizmos()

@@ -36,24 +36,24 @@ namespace Demos.Vehicle
         
         protected const string MODEL_NAME = "Simplified Pacejka";
 
-        public override void GetLongitudinal(CustomWheel wheel, float deltaTime, out float longitudinal)
+        public override void GetLongitudinal(float load, float slip, float deltaTime, out float longitudinal)
         {
             longitudinal = SimplifiedFormula(
-                wheel.GroundData.Hit.force,
-                wheel.SlipRatio,
+                load,
+                slip,
                 LongitudinalParameters.Stiffness,
                 LongitudinalParameters.Shape,
                 LongitudinalParameters.Peak,
                 LongitudinalParameters.Curvature);
         }
 
-        public override void GetLateral(CustomWheel wheel, float deltaTime, out float lateral)
+        public override void GetLateral(float load, float slip, float deltaTime, out float lateral)
         {
             // Slip angle normalized to -1 to 1f.
-            var slip = wheel.SlipAngle / 90f;
+            //var slip = slip / 90f;
             lateral = -SimplifiedFormula(
-                wheel.GroundData.Hit.force,
-                wheel.SlipAngle,
+                load,
+                slip,
                 LateralParameters.Stiffness,
                 LateralParameters.Shape,
                 LateralParameters.Peak,

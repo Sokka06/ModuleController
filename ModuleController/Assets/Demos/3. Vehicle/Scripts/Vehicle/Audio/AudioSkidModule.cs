@@ -27,14 +27,16 @@ namespace Demos.Vehicle
         {
             var skidNormalized = 0f;
 
-            if (Enabled && Controller.VehicleController.GroundData.IsGrounded && !(Controller.VehicleController.Rigidbody.velocity.sqrMagnitude < 1f))
+            var velocitySqrMag = Controller.VehicleController.Velocity.sqrMagnitude;
+
+            if (Enabled && Controller.VehicleController.GroundData.IsGrounded && !(velocitySqrMag < 1f))
             {
-                var forwardSpeed = Vector3.Dot(Controller.VehicleController.Rigidbody.velocity,
+                var forwardSpeed = Vector3.Dot(Controller.VehicleController.Velocity,
                     Controller.VehicleController.Transform.forward);
-                var sideSpeed = Vector3.Dot(Controller.VehicleController.Rigidbody.velocity,
+                var sideSpeed = Vector3.Dot(Controller.VehicleController.Velocity,
                     Controller.VehicleController.Transform.right);
 
-                skidNormalized = sideSpeed * sideSpeed / Controller.VehicleController.Rigidbody.velocity.sqrMagnitude;
+                skidNormalized = sideSpeed * sideSpeed / velocitySqrMag;
             }
             
             _volume = VolumeCurve.Evaluate(skidNormalized);

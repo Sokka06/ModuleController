@@ -1084,10 +1084,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Rigidbody: {fileID: 1964071436788819024}
   Wheels:
-  - {fileID: 1964071435952661970}
-  - {fileID: 1964071437122079733}
-  - {fileID: 1964071436633480393}
-  - {fileID: 1964071436712996257}
+  - {fileID: 1359809859539614195}
+  - {fileID: 7472928121282469496}
+  - {fileID: 3365558917366127780}
+  - {fileID: 238781135796939201}
 --- !u!114 &1964071436874305557
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ namespace Demos.Vehicle
     {
         [Header("Drive Module")]
         public List<WheelCollider> PoweredWheels;
+        [Space]
         public float Speed = 20f;
         public float Acceleration = 2f;
 
@@ -36,42 +37,21 @@ namespace Demos.Vehicle
             if (!Enabled || !Controller.GroundData.IsGrounded || !(input > 0f))
                 return;
 
-            //var velocity = Controller.Rigidbody.velocity;
-
-            //var direction = Vector3.Cross(Controller.Transform.right, Controller.GroundData.Normal);
-            //var targetVelocity = direction * Speed * _inputModule.Inputs.Throttle;
-            
             var targetSpeed = Speed * _gearboxModule.Gearbox.GetRatio() * input;
 
-            /*var localVelocity = Controller.Transform.InverseTransformVector(Controller.Rigidbody.velocity);
-            
-            var targetLocalVelocity = localVelocity;
-            targetLocalVelocity.z = Speed * _inputModule.Inputs.Throttle;
-            targetLocalVelocity.z -= Speed * _inputModule.Inputs.Brake;
-
-            var velocityDiff = targetLocalVelocity - localVelocity;*/
-
-            //var velocityDiff = Vector3.ProjectOnPlane(targetVelocity - velocity, Vector3.up);
-
-            //var force = velocityDiff * Acceleration;
             for (int i = 0; i < PoweredWheels.Count; i++)
             {
                 var isGrounded = PoweredWheels[i].GetGroundHit(out var wheelHit);
+                
                 if (!isGrounded)
                     continue;
 
                 var forward = Vector3.Cross(wheelHit.sidewaysDir, wheelHit.normal);
-                var velocity = Controller.Rigidbody.GetPointVelocity(wheelHit.point);
+                var velocity = Controller.PointVelocity(wheelHit.point);
                 var velocityDiff = Vector3.ProjectOnPlane((forward * targetSpeed) - velocity, Vector3.up);
                 var force = velocityDiff * Acceleration;
                 
-                Controller.Rigidbody.AddForceAtPosition(force / PoweredWheels.Count, wheelHit.point, ForceMode.Acceleration);
-            }
-            //Controller.Rigidbody.AddForce(velocityDiff * Acceleration, ForceMode.Acceleration);
-            
-            for (int i = 0; i < Controller.Wheels.Count; i++)
-            {
-                //Controller.Wheels[i].motorTorque = _inputModule.Inputs.Throttle * 1000f;
+                Controller.AddVelocity(force / PoweredWheels.Count, wheelHit.point, ForceMode.Acceleration);
             }
         }
 

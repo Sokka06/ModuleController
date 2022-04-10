@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Demos.Vehicle
 {
+    /// <summary>
+    /// Simple fake handbrake. Reduces friction.
+    /// </summary>
     public class VehicleHandbrakeModule : AbstractVehicleModule
     {
         public List<CustomWheel> HandbrakedWheels;
@@ -20,9 +23,6 @@ namespace Demos.Vehicle
 
         public override void UpdateModule(float deltaTime)
         {
-            //if(!Controller.GroundData.IsGrounded)
-            //    return;
-
             if (_inputModule.Inputs.Handbrake > 0f)
                 _amount = _inputModule.Inputs.Handbrake;
 

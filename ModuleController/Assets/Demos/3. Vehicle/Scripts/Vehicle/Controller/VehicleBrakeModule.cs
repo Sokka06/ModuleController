@@ -30,9 +30,9 @@ namespace Demos.Vehicle
             
             if (!Enabled || !(input > 0f))
                 return;
+            
             // simple drag formula.
             //velocity = velocity * ( 1 - deltaTime * drag);
-
 
             for (int i = 0; i < BrakedWheels.Count; i++)
             {
@@ -40,28 +40,13 @@ namespace Demos.Vehicle
                 if (!isGrounded)
                     continue;
 
-                /*var forward = Vector3.Cross(wheelHit.sidewaysDir, wheelHit.normal);
-                var velocity = Controller.Rigidbody.GetPointVelocity(wheelHit.point);
-                var velocityDiff = Vector3.ProjectOnPlane((forward * targetSpeed) - velocity, Vector3.up);
-                var force = velocityDiff * BrakeFactor;*/
-
-                var velocity = Controller.Rigidbody.GetPointVelocity(wheelHit.point);
-                //if (!(velocity.sqrMagnitude > 0.1f))
-                //    continue;
+                var velocity = Controller.PointVelocity(wheelHit.point);
                 
                 var load = BrakedWheels[i].sprungMass;
-                var force = GetBrakeForceDrag(velocity, deltaTime);
-                force = GetBrakeForce(velocity, load);
+                var force = Vector3.ClampMagnitude(-Vector3.ProjectOnPlane(velocity, wheelHit.normal), 1f) * load * BrakeFactor * input;
 
-                Controller.Rigidbody.AddForceAtPosition(Vector3.ClampMagnitude(-Vector3.ProjectOnPlane(velocity, wheelHit.normal), 1f) * load * BrakeFactor * input, wheelHit.point);
+                Controller.AddVelocity(force, wheelHit.point);
             }
-        }
-
-        private Vector3 GetVelocity(Vector3 position)
-        {
-            var velocity = Controller.Rigidbody.GetPointVelocity(position);
-            var localVelocity = Controller.Transform.InverseTransformVector(velocity);
-            return velocity;
         }
 
         /// <summary>
@@ -73,9 +58,9 @@ namespace Demos.Vehicle
         private Vector3 GetBrakeForceDrag(Vector3 velocity, float deltaTime)
         {
             var factor = BrakeFactor;
-            var veloc = velocity * factor;
-            var coeff = (1 - deltaTime * factor);
-            var force = veloc / coeff;
+            var v = velocity * factor;
+            var c = (1 - deltaTime * factor);
+            var force = v / c;
             
             return -force;
         }
@@ -90,8 +75,6 @@ namespace Demos.Vehicle
         {
             //F = 0.5f * mass * velocity^2
             var force = 0.5f * mass * Mathf.Pow(velocity.magnitude, 2f);
-            //Debug.Log($"Velocity: {velocity}, Mass: {mass} = {force}");
-            //Debug.Log($"Should be 187500f: {(0.5f * 15000f * Mathf.Pow(25f, 2f) / 25)}");
             
             return -velocity.normalized * force;
         }

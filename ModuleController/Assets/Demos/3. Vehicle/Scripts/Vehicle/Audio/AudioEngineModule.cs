@@ -30,9 +30,9 @@ namespace Demos.Vehicle
 
         public override void UpdateModule(float deltaTime)
         {
-            var forwardSpeed = Vector3.Dot(Controller.VehicleController.Rigidbody.velocity,
+            var forwardSpeed = Vector3.Dot(Controller.VehicleController.Velocity,
                 Controller.VehicleController.Transform.forward);
-            var sideSpeed = Vector3.Dot(Controller.VehicleController.Rigidbody.velocity,
+            var sideSpeed = Vector3.Dot(Controller.VehicleController.Velocity,
                 Controller.VehicleController.Transform.right);
             var speedNormalized = Mathf.Abs(forwardSpeed) / _driveModule.Speed;
             
