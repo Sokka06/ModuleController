@@ -6,24 +6,22 @@ namespace Demos.Vehicle
 {
     public class DemoIngameModule : AbstractDemoModule
     {
-        public RaceController RaceController;
-
         private Racer _playerRacer;
 
         public override void EnterModule()
         {
             base.EnterModule();
             
-            RaceController.StartRace();
+            Controller.RaceController.StartRace();
             
-            // Un freeze all racers.
-            for (int i = 0; i < RaceController.CurrentRace.Racers.Count; i++)
+            // Unfreeze all racers.
+            for (int i = 0; i < Controller.RaceController.CurrentRace.Racers.Count; i++)
             {
-                RaceController.CurrentRace.Racers[i].Driver.Vehicle.SetFreeze(false);
+                Controller.RaceController.CurrentRace.Racers[i].Driver.Vehicle.SetFreeze(false);
             }
 
             // Assuming first racer is the player.
-            _playerRacer = RaceController.CurrentRace.Racers[0];
+            _playerRacer = Controller.RaceController.CurrentRace.Racers[0];
             _playerRacer.onFinish += OnPlayerFinish;
         }
 

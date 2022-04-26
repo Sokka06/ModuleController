@@ -13,6 +13,7 @@ namespace Demos.Vehicle
         private void Start()
         {
             var raceController = FindObjectOfType<RaceController>();
+            
             // Assuming first racer is the player.
             var standing = raceController.CurrentRace.Standings.GetStanding(raceController.CurrentRace.Racers[0]);
             FinishText.SetText($"Finished {ColorText(StandingToText(standing), StandingToColor(standing))}!");

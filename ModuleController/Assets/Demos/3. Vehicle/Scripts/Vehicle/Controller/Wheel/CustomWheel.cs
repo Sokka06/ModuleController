@@ -6,16 +6,6 @@ using UnityEngine;
 
 namespace Demos.Vehicle
 {
-    public struct CustomWheelData
-    {
-
-
-        /// <summary>
-        /// Load on the wheel in Nm.
-        /// </summary>
-        public float Load;
-    }
-
     public struct WheelGroundData
     {
         public bool HasGround;
@@ -31,14 +21,13 @@ namespace Demos.Vehicle
 
         [Space] 
         public float Stiffness = 1f;
-        public AbstractFrictionModel LongitudinalFrictionModel;
         public AbstractFrictionModel LateralFrictionModel;
-
-        //
-        private float _inertia;
-        private float _inverseMass;
+        
+        // Used to reduce divisions.
+        private float _inverseInertia;
         private float _inverseRadius;
-
+        
+        public float Inertia { get; private set; }
         public float Mass
         {
             get => Collider.mass;
@@ -91,7 +80,6 @@ namespace Demos.Vehicle
         
         public Rigidbody Rigidbody => Collider.attachedRigidbody;
         public WheelGroundData GroundData { get; private set; }
-        public CustomWheelData WheelData { get; private set; }
 
         private void OnValidate()
         {
@@ -113,23 +101,17 @@ namespace Demos.Vehicle
         private void Awake()
         {
             GroundData = new WheelGroundData();
-            WheelData = new CustomWheelData();
 
             PreCalculate();
         }
 
         private void PreCalculate()
         {
-            _inertia = Mass * Radius * Radius * 0.5f;
+            Inertia = Mass * Radius * Radius * 0.5f;
+            
+            _inverseInertia = 1f / Inertia;
             _inverseRadius = 1f / Radius;
         }
-
-        // Updated by Vehicle Controller.
-        /*private void FixedUpdate()
-        {
-            var deltaTime = Time.deltaTime;
-            UpdateWheel(deltaTime);
-        }*/
 
         public void UpdateWheel(float deltaTime)
         {
@@ -145,12 +127,7 @@ namespace Demos.Vehicle
             Collider.GetWorldPose(out var pos, out var rot);
             Position = pos;
             Orientation = rot;
-            var wheelData = new CustomWheelData
-            {
 
-            };
-            WheelData = wheelData;
-            
             // Ground Data
             var groundData = new WheelGroundData
             {
@@ -161,36 +138,20 @@ namespace Demos.Vehicle
             };
             GroundData = groundData;
             
+            // Only Lateral friction is used.
             var frictionForce = Vector3.zero;
-            var longitudinalForce = 0f;
             var lateralForce = 0f;
 
             if (GroundData.HasGround)
             {
-                //Longitudinal
-                if (LongitudinalFrictionModel != null)
-                    LongitudinalFrictionModel.GetLongitudinal(GroundData.Hit.force, SlipRatio, deltaTime, out longitudinalForce);
-                
-                frictionForce += GroundData.ForwardDir * longitudinalForce;
-                
-                // Lateral
                 if (LateralFrictionModel != null)
                     LateralFrictionModel.GetLateral(GroundData.Hit.force, SlipAngle, deltaTime, out lateralForce);
 
-                frictionForce += GroundData.SidewaysDir * lateralForce;
+                frictionForce += GroundData.SidewaysDir * -lateralForce;
                 
                 Rigidbody.AddForceAtPosition(frictionForce * Stiffness, wheelHit.point);
-                
-                // Experimental angular acceleration calculation from Longitudinal friction.
-                // TODO: Add rolling resistance, otherwise wheels go nuts when near 0 angular velocity.
-                var totalTorque = 0f;
-                totalTorque += -longitudinalForce * Radius;
-                
-                var angularAcceleration = totalTorque / _inertia;
-                AngularVelocity += angularAcceleration * Mathf.Deg2Rad * deltaTime;
             }
 
-            LongitudinalFrictionForce = longitudinalForce;
             LateralFrictionForce = lateralForce;
         }
 

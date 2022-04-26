@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Demos.Common;
 using UnityEngine;
 
 namespace Demos.Vehicle
@@ -37,7 +38,7 @@ namespace Demos.Vehicle
             base.SetupModule(controller);
 
             _steerController = new PIDController(SteerValues);
-            _currentTF = Controller.WaypointManager.GetNearestPointTF(Controller.Vehicle.Controller.Transform.position);
+            _currentTF = Controller.PathManager.GetNearestPointTF(Controller.Vehicle.Controller.Transform.position);
 
             // Initialize slip force curve. used to brake on sharp turns.
             _slipForceCurve = new AnimationCurve();
@@ -72,18 +73,9 @@ namespace Demos.Vehicle
             _steerModule = vehicle.Controller.GetModule<VehicleSteerModule>();
         }
 
-        public override void UpdateState(float deltaTime)
-        {
-            base.UpdateState(deltaTime);
-            
-            
-        }
-
         public override void UpdateModule(float deltaTime)
         {
-            base.UpdateModule(deltaTime);
-            
-            if  (!Enabled || Controller.State != AIState.Race)
+            if  (!Enabled)
                 return;
 
             UpdateTarget(out var targetData);
@@ -99,27 +91,27 @@ namespace Demos.Vehicle
         {
             var position = Controller.Vehicle.Controller.Transform.position;
             
-            var nearestPointTF = Controller.WaypointManager.GetNearestPointTF(position);
+            var nearestPointTF = Controller.PathManager.GetNearestPointTF(position);
             var lookAheadTF =
-                Controller.WaypointManager.DistanceToTF(Mathf.Max(Controller.Vehicle.Controller.Rigidbody.velocity.magnitude * LookAheadTime, 1f));
+                Controller.PathManager.DistanceToTF(Mathf.Max(Controller.Vehicle.Controller.Rigidbody.velocity.magnitude * LookAheadTime, 1f));
             
-            var deltaTF = nearestPointTF - _currentTF;
+            /*var deltaTF = nearestPointTF - _currentTF;
             
             if (Mathf.Sign(deltaTF) < 0)
             {
-                Debug.Log("<color=red>CANT GO BACK</color>");
+                //Debug.Log("<color=red>CANT GO BACK</color>");
             }
-            var deltaDistance = Controller.WaypointManager.TFToDistance(deltaTF);
+            var deltaDistance = Controller.PathManager.TFToDistance(deltaTF);
             if (deltaDistance > MaxCutDistance)
             {
-                Debug.Log("<color=blue>MASSIVE CUT</color>");
-            }
+                //Debug.Log("<color=blue>MASSIVE CUT</color>");
+            }*/
             
             _currentTF = nearestPointTF;
             
-            var nearestPoint = Controller.WaypointManager.Interpolate(_currentTF, out var nearestForward);
-            var lookAheadPoint = Controller.WaypointManager.Interpolate(_currentTF + lookAheadTF, out var lookAheadForward);
-            var distance = Controller.WaypointManager.TFToDistance(lookAheadTF);
+            var nearestPoint = Controller.PathManager.Interpolate(_currentTF, out var nearestForward);
+            var lookAheadPoint = Controller.PathManager.Interpolate(_currentTF + lookAheadTF, out var lookAheadForward);
+            var distance = Controller.PathManager.TFToDistance(lookAheadTF);
             
             targetData = new TargetData
             {
@@ -189,35 +181,6 @@ namespace Demos.Vehicle
         /// <returns></returns>
         private float StanleySteer(Vector2 axlePoint, Vector2 axleForward, Vector2 pathPoint, Vector2 pathForward, float velocity, float k = 1f)
         {
-            /*var segment = Controller.WaypointManager.TFToSegment(_currentTF, out var index);
-
-            var yaw = 0f;
-            var x = 0f;
-            var y = 0f;
-            var k_e = 0f;
-            var k_v = 0f;
-            var v = 0f;
-            
-            var last_point_on_trajectory = segment.Start.Position3D;
-            var first_point_on_trajectory = segment.End.Position3D;
-            var yaw_path = Mathf.Atan2(last_point_on_trajectory.z - first_point_on_trajectory.z,
-                last_point_on_trajectory.x - first_point_on_trajectory.x) * Mathf.Rad2Deg;
-            var yaw_diff = yaw_path - yaw;
-
-            yaw_diff = NormalizeAngle(yaw_diff);
-
-            var center_axle_current = Vector3.Lerp(Controller.Vehicle.Controller.Wheels[0].transform.position, Controller.Vehicle.Controller.Wheels[1].transform.position, 0.5f);
-            var crosstrack_error = 0f;//np.min(np.sum((center_axle_current - np.array(waypoints)[:, :2]) ** 2, axis=1));
-            var yaw_cross_track = Mathf.Atan2(y - first_point_on_trajectory.y, x - first_point_on_trajectory.x);
-            var yaw_diff_of_path_cross_track = NormalizeAngle(yaw_path - yaw_cross_track);
-            crosstrack_error = yaw_diff_of_path_cross_track > 0
-                ? Mathf.Abs(crosstrack_error)
-                : -Mathf.Abs(crosstrack_error);
-
-            var yaw_diff_crosstrack = Mathf.Atan2(k_e * crosstrack_error, k_v + v);
-
-            var expected_steering_angle = Mathf.Clamp(NormalizeAngle(yaw_diff + yaw_diff_crosstrack), -1.22f, 1.22f);*/
-            
             var e = Vector2.Distance(axlePoint, pathPoint);
             
             var yaw = Mathf.Atan2(axleForward.y, axleForward.x);
@@ -296,17 +259,18 @@ namespace Demos.Vehicle
             //Debug.Log($"radius: {radius}, centripetal force: {centripetalForce}");
 
             // Calculate curve angle from radius
-            var angle = Vector2.Distance(nearestPoint2D, lookAheadPoint2D) / radius * Mathf.Rad2Deg;
-            /*
-            angle = Vector2.Angle(
-                new Vector2(TargetData.NearestForward.x, TargetData.NearestForward.z).normalized,
-                new Vector2(TargetData.LookAheadForward.x, TargetData.LookAheadForward.z).normalized);
-            */
+            var angleA = Vector2.Distance(nearestPoint2D, lookAheadPoint2D) / radius * Mathf.Rad2Deg;
             
-            var frictionForce = _slipForceCurve.Evaluate(angle);
+            var angleB = Vector2.Angle(
+                new Vector2(velocity.x,velocity.z).normalized,
+                lookAheadPoint2D);
+            //Debug.Log($"{angleA}, {angleB}");
+            
+            var frictionForce = _slipForceCurve.Evaluate(angleB) * 2f;
+            //Debug.Log($"Centripetal: {centripetalForce}, Friction: {frictionForce} = {Mathf.InverseLerp(1f, 2f, (centripetalForce / frictionForce))}");
             //Debug.Log($"angle: {angle}, friction force: {frictionForce}");
 
-            brake = centripetalForce < frictionForce || velocity.sqrMagnitude < 1f ? 0f : 1f;
+            brake = velocity.sqrMagnitude < 1f ? 0f : Mathf.Clamp01(Mathf.InverseLerp(1f, 2f, (centripetalForce / frictionForce)));
             return brake;
         }
 
@@ -324,9 +288,12 @@ namespace Demos.Vehicle
         {
             if (!Application.isPlaying)
                 return;
+
+            var position2D = Controller.Vehicle.Controller.Position;
+            position2D.y = TargetData.NearestPoint.y;
             
-            Gizmos.DrawLine(Controller.Vehicle.Controller.Transform.position, TargetData.LookAheadPoint);
+            Gizmos.DrawLine(position2D, TargetData.NearestPoint);
+            Gizmos.DrawLine(position2D, TargetData.LookAheadPoint);
         }
     }
 }
-

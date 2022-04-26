@@ -51,7 +51,7 @@ namespace Demos.Vehicle
         {
             // Slip angle normalized to -1 to 1f.
             //var slip = slip / 90f;
-            lateral = -SimplifiedFormula(
+            lateral = SimplifiedFormula(
                 load,
                 slip,
                 LateralParameters.Stiffness,

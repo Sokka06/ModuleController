@@ -16,12 +16,11 @@ namespace Demos.Vehicle
     public class RaceController : MonoBehaviour
     {
         public CheckpointManager CheckpointManager;
+        public PathManager pathManager;
         public DriverManager DriverManager;
-        public SpawnManager SpawnManager;
         
         [Space]
         public RaceSettings Settings;
-        public List<DriverConfig> Drivers;
 
         public Race CurrentRace { get; private set; }
 
@@ -29,48 +28,17 @@ namespace Demos.Vehicle
         public event Action<Race> onFinishRace;
         public event Action<Race> onResetRace;
 
-        private void Awake()
-        {
-            for (int i = 0; i < Drivers.Count; i++)
-            {
-                SpawnManager.GetNext().GetSpawn(out var position, out var rotation);
-                
-                var driver = Instantiate(Drivers[i].Driver, transform);
-                var vehicle = Instantiate(Drivers[i].Vehicle, position, rotation);
-                driver.Setup(vehicle);
-                
-                DriverManager.RegisterDriver((driver, vehicle));
-            }
-            
-            CreateRace(Settings, DriverManager.CurrentDrivers);
-        }
-
-        private void FixedUpdate()
-        {
-            if (!(CurrentRace is { State: RaceState.Started }))
-                return;
-
-            var deltaTime = Time.deltaTime;
-
-            // Update racers
-            for (int i = 0; i < CurrentRace.Racers.Count; i++)
-            {
-                var racer = CurrentRace.Racers[i];
-                racer.SetCurrentLapTime(racer.GetCurrentLapTime() + deltaTime);
-                racer.SetDistance(GetDistanceToCheckpoint(racer, CheckpointManager.Checkpoints[racer.CheckpointData.Index]));
-            }
-            
-            // Update race
-            CurrentRace.SetRaceTime(CurrentRace.GetRaceTime() + deltaTime);
-            CurrentRace.UpdateStandings();
-        }
-
         private void OnDestroy()
         {
             if (CurrentRace != null)
                 FinishRace();
         }
-
+        
+        private void FixedUpdate()
+        {
+            UpdateRace(Time.deltaTime);
+        }
+        
         /// <summary>
         /// Makes a new race
         /// </summary>
@@ -101,6 +69,24 @@ namespace Demos.Vehicle
 
             CurrentRace.Start();
             onStartRace?.Invoke(CurrentRace);
+        }
+
+        public void UpdateRace(float deltaTime)
+        {
+            if (!(CurrentRace is { State: RaceState.Started }))
+                return;
+
+            // Update racers
+            for (int i = 0; i < CurrentRace.Racers.Count; i++)
+            {
+                var racer = CurrentRace.Racers[i];
+                racer.SetCurrentLapTime(racer.GetCurrentLapTime() + deltaTime);
+                racer.SetDistance(GetDistanceToCheckpoint(racer, CheckpointManager.Checkpoints[racer.CheckpointData.Index]));
+            }
+            
+            // Update race
+            CurrentRace.SetRaceTime(CurrentRace.GetRaceTime() + deltaTime);
+            CurrentRace.UpdateStandings();
         }
 
         public void FinishRace()

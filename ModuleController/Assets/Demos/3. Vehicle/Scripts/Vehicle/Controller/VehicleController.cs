@@ -80,14 +80,30 @@ namespace Demos.Vehicle
         public List<Collider> LocalColliders { get; private set; }
         
         public Transform Transform => Rigidbody.transform;
-        public Vector3 Position => Rigidbody.position;
-        public Quaternion Rotation => Rigidbody.rotation;
-        public Vector3 Velocity => Rigidbody.velocity;
+        public Vector3 Position
+        {
+            get => Rigidbody.position;
+            set => Rigidbody.MovePosition(value);
+        }
+        public Quaternion Rotation
+        {
+            get => Rigidbody.rotation;
+            set => Rigidbody.MoveRotation(value);
+        }
+        public Vector3 Velocity
+        {
+            get => Rigidbody.velocity;
+            set => Rigidbody.velocity = value;
+        }
+        public Vector3 AngularVelocity
+        {
+            get => Rigidbody.angularVelocity;
+            set => Rigidbody.angularVelocity = value;
+        }
+        public float Mass => Rigidbody.mass;
         public Vector3 LocalVelocity => Transform.InverseTransformVector(Velocity);
         public Vector3 PointVelocity(Vector3 point) => Rigidbody.GetPointVelocity(point);
-        public Vector3 AngularVelocity => Rigidbody.angularVelocity;
-        public float Mass => Rigidbody.mass;
-
+        
         public event Action onModulesChanged;
 
         private void OnValidate()
@@ -105,7 +121,6 @@ namespace Demos.Vehicle
             
             GroundData = new GroundData();
             Frame = new VehicleFrame(transform, Wheels.ToArray());
-            Debug.Log(Frame);
             LocalColliders = new List<Collider>(FindLocalColliders());
         }
 
@@ -190,30 +205,6 @@ namespace Demos.Vehicle
             }
             
             return colliders.ToArray();
-        }
-
-        /// <summary>
-        /// Sets rigidbody position.
-        /// </summary>
-        /// <param name="position"></param>
-        public void SetPosition(Vector3 position)
-        {
-            Rigidbody.MovePosition(position);
-        }
-        
-        /// <summary>
-        /// Sets rigidbody rotation.
-        /// </summary>
-        /// <param name="rotation"></param>
-        public void SetRotation(Quaternion rotation)
-        {
-            Rigidbody.MoveRotation(rotation);
-        }
-
-        public void SetPositionAndRotation(Vector3 position, Quaternion rotation)
-        {
-            SetPosition(position);
-            SetRotation(rotation);
         }
 
         public void AddVelocity(Vector3 velocity, ForceMode forceMode = ForceMode.Force)

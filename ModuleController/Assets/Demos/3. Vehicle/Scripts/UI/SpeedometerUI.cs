@@ -5,26 +5,29 @@ using Demos.Vehicle;
 using TMPro;
 using UnityEngine;
 
-public class SpeedometerUI : MonoBehaviour
+namespace Demos.Vehicle
 {
-    public TextMeshProUGUI SpeedometerText;
-
-    private VehicleDriveModule _driveModule;
-
-    private void Start()
+    public class SpeedometerUI : MonoBehaviour
     {
-        var vehicle = FindObjectOfType<DriverManager>().CurrentDrivers[0].Vehicle;
-        _driveModule = vehicle.Controller.GetModule<VehicleDriveModule>();
-    }
+        public TextMeshProUGUI SpeedometerText;
 
-    private void LateUpdate()
-    {
-        var speed = Vector3.Dot(_driveModule.Controller.Rigidbody.velocity, _driveModule.Controller.transform.forward);
-        SpeedometerText.SetText($"{Mathf.Abs((int)MsToKPH(speed))} KPH");
-    }
+        private VehicleDriveModule _driveModule;
 
-    private float MsToKPH(float ms)
-    {
-        return ms * 3.6f;
+        private void Start()
+        {
+            var vehicle = FindObjectOfType<DriverManager>().CurrentDrivers[0].Vehicle;
+            _driveModule = vehicle.Controller.GetModule<VehicleDriveModule>();
+        }
+
+        private void LateUpdate()
+        {
+            var speed = Vector3.Dot(_driveModule.Controller.Rigidbody.velocity, _driveModule.Controller.transform.forward);
+            SpeedometerText.SetText($"{Mathf.Abs((int)MsToKPH(speed))} KPH");
+        }
+
+        private float MsToKPH(float ms)
+        {
+            return ms * 3.6f;
+        }
     }
 }

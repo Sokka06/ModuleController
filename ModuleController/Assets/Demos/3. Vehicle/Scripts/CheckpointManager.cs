@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Demos.Vehicle
 {
     /// <summary>
-    /// Holds all checkpoints, next checkpoint, previous checkpoint, is last checkpoint etc
+    /// Holds all checkpoints.
     /// </summary>
     public class CheckpointManager : MonoBehaviour
     {

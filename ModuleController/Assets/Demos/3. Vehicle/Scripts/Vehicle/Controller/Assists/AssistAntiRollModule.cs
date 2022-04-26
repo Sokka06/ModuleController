@@ -3,38 +3,42 @@ using System.Collections.Generic;
 using Demos.Vehicle;
 using UnityEngine;
 
-public class AssistAntiRollModule : AbstractAssistModule
+namespace Demos.Vehicle
 {
-    [Range(0f, 1f)]
-    public float Factor = 1f;
-
-    private Vector3 _initialCenterOfMass;
-    private bool _prevIsGrounded;
-
-    public override void SetupModule(VehicleAssistsModule controller)
+    public class AssistAntiRollModule : AbstractAssistModule
     {
-        base.SetupModule(controller);
+        [Range(0f, 1f)]
+        public float Factor = 1f;
 
-        _initialCenterOfMass = Controller.Controller.Rigidbody.centerOfMass;
-    }
+        private Vector3 _initialCenterOfMass;
+        private bool _prevIsGrounded;
 
-    public override void UpdateModule(float deltaTime)
-    {
-        base.UpdateModule(deltaTime);
-
-        if (Controller.Controller.GroundData.IsGrounded)
+        public override void SetupModule(VehicleAssistsModule controller)
         {
-            var centerOfMass = _initialCenterOfMass;
-            centerOfMass.y = Mathf.Lerp(_initialCenterOfMass.y, 0f, Factor);
-            Controller.Controller.Rigidbody.centerOfMass = centerOfMass;
+            base.SetupModule(controller);
+
+            _initialCenterOfMass = Controller.Controller.Rigidbody.centerOfMass;
         }
 
-        // Left ground, reset center of mass.
-        if (_prevIsGrounded && !Controller.Controller.GroundData.IsGrounded)
+        public override void UpdateModule(float deltaTime)
         {
-            Controller.Controller.Rigidbody.centerOfMass = _initialCenterOfMass;
-        }
+            base.UpdateModule(deltaTime);
 
-        _prevIsGrounded = Controller.Controller.GroundData.IsGrounded;
+            if (Controller.Controller.GroundData.IsGrounded)
+            {
+                var centerOfMass = _initialCenterOfMass;
+                centerOfMass.y = Mathf.Lerp(_initialCenterOfMass.y, 0f, Factor);
+                Controller.Controller.Rigidbody.centerOfMass = centerOfMass;
+            }
+
+            // Left ground, reset center of mass.
+            if (_prevIsGrounded && !Controller.Controller.GroundData.IsGrounded)
+            {
+                Controller.Controller.Rigidbody.centerOfMass = _initialCenterOfMass;
+            }
+
+            _prevIsGrounded = Controller.Controller.GroundData.IsGrounded;
+        }
     }
+
 }

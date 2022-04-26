@@ -18,7 +18,7 @@ namespace Demos.Vehicle
         public Vector3 Tangent;
     }
 
-    public class WaypointManager : MonoBehaviour
+    public class PathManager : MonoBehaviour
     {
         public List<PathPoint> Points;
         public string NamePrefix = "PathPoint";
@@ -28,7 +28,7 @@ namespace Demos.Vehicle
 
         private void OnValidate()
         {
-            UpdatePoint();
+            UpdatePoints();
         }
 
         private void Awake()
@@ -381,8 +381,8 @@ namespace Demos.Vehicle
             return error;
         }*/
 
-        [ContextMenu("Update Waypoints")]
-        public void UpdatePoint()
+        [ContextMenu("Update Points")]
+        public void UpdatePoints()
         {
             FindPoints();
             SetupPoints();

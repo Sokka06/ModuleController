@@ -6,16 +6,15 @@ using UnityEngine;
 
 namespace Demos.Vehicle
 {
-    public enum RaceDemoState
-    {
-        Intro,
-        Ingame,
-        Finish
-    }
-    
     public class RaceDemoController : ModuleControllerBehaviour<RaceDemoController, AbstractDemoModule>
     {
         public AbstractDemoModule[] StateModules;
+        
+        [Space]
+        public List<DriverConfig> Drivers;
+        public DriverManager DriverManager;
+        public SpawnManager SpawnManager;
+        public RaceController RaceController;
         
         public AbstractDemoModule State { get; private set; }
         public event Action<(AbstractDemoModule prevState, AbstractDemoModule currentState)> onStateChanged;
@@ -23,12 +22,25 @@ namespace Demos.Vehicle
         protected override void Awake()
         {
             base.Awake();
+            
+            // Spawn drivers and vehicles.
+            for (int i = 0; i < Drivers.Count; i++)
+            {
+                SpawnManager.GetNext().GetSpawn(out var position, out var rotation);
+                
+                var driver = Instantiate(Drivers[i].Driver, transform);
+                var vehicle = Instantiate(Drivers[i].Vehicle, position, rotation);
+                driver.Setup(vehicle);
+                
+                DriverManager.RegisterDriver((driver, vehicle));
+            }
         }
 
         private void Start()
         {
-            SetupModules();
+            RaceController.CreateRace(RaceController.Settings, DriverManager.CurrentDrivers);
             
+            SetupModules();
             SetState(Modules[0]);
         }
 

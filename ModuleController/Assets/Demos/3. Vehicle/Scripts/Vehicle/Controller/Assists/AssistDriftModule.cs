@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using Demos.Vehicle;
 using UnityEngine;
 
-/// <summary>
+namespace Demos.Vehicle
+{
+    /// <summary>
 /// Helps you drift by adding a sideways force.
 /// </summary>
 public class AssistDriftModule : AbstractAssistModule
@@ -141,4 +143,5 @@ public class AssistDriftModule : AbstractAssistModule
 
         return result;
     }
+}
 }

@@ -10,10 +10,14 @@ namespace Demos.Vehicle
     {
         public virtual void AssignVehicle(Vehicle vehicle)
         {
+        }
+
+        public virtual void EnterModule()
+        {
             
         }
 
-        public virtual void UpdateState(float deltaTime)
+        public virtual void ExitModule()
         {
             
         }

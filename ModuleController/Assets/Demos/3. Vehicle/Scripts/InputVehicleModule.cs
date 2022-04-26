@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using Demos.Common;
 using Demos.Vehicle;
 using UnityEngine;
 
-namespace Demos.Common
+namespace Demos.Vehicle
 {
+    /// <summary>
+    /// Sends Player Inputs to Vehicle.
+    /// </summary>
     public class InputVehicleModule : AbstractInputModule
     {
-        public Vehicle.Vehicle Vehicle;
+        public Vehicle Vehicle;
 
         private VehicleInputModule _inputModule;
 
@@ -18,7 +22,7 @@ namespace Demos.Common
             AssignVehicle(Vehicle);
         }
 
-        public void AssignVehicle(Vehicle.Vehicle vehicle)
+        public void AssignVehicle(Vehicle vehicle)
         {
             Vehicle = vehicle;
             if (Vehicle == null)

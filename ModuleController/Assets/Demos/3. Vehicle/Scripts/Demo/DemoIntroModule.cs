@@ -8,9 +8,6 @@ namespace Demos.Vehicle
 {
     public class DemoIntroModule : AbstractDemoModule
     {
-        [Header("Intro")]
-        public DriverManager DriverManager;
-        
         public override void SetupModule(RaceDemoController controller)
         {
             base.SetupModule(controller);
@@ -21,9 +18,9 @@ namespace Demos.Vehicle
             base.EnterModule();
 
             // Freeze all vehicles
-            for (int i = 0; i < DriverManager.CurrentDrivers.Count; i++)
+            for (int i = 0; i < Controller.DriverManager.CurrentDrivers.Count; i++)
             {
-                DriverManager.CurrentDrivers[i].Vehicle.SetFreeze(true);
+                Controller.DriverManager.CurrentDrivers[i].Vehicle.SetFreeze(true);
             }
             
             // Move to ingame when any button is pressed.

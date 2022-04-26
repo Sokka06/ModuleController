@@ -4,10 +4,14 @@ using Demos.Vehicle;
 using Sokka06.ModuleController;
 using UnityEngine;
 
-public abstract class AbstractAssistModule : ModuleBehaviour<VehicleAssistsModule, AbstractAssistModule>
+namespace Demos.Vehicle
 {
-    public override void UpdateModule(float deltaTime)
+    public abstract class AbstractAssistModule : ModuleBehaviour<VehicleAssistsModule, AbstractAssistModule>
     {
+        public override void UpdateModule(float deltaTime)
+        {
         
+        }
     }
 }
+

@@ -6,13 +6,6 @@ using UnityEngine;
 
 namespace Demos.Vehicle
 {
-    public enum AIState
-    {
-        Race,
-        OffTrack,
-        Stuck
-    }
-
     public class AIVehicleInputs
     {
         public float Steer;
@@ -26,29 +19,33 @@ namespace Demos.Vehicle
         public int UpdateInterval = 2;
 
         private int _updateCount;
+        private float _deltaAccum;
+        
         private VehicleInputModule _inputModule;
         
+        public AbstractAIModule CurrentModule { get; private set; }
         public AIVehicleInputs VehicleInputs { get; private set; }
         public Vehicle Vehicle { get; private set; }
+        public PathManager PathManager { get; private set; }
+        
+        public event Action<(AbstractAIModule prev, AbstractAIModule current)> onModuleChanged; 
 
-        public AIState State { get; private set; }
-        public WaypointManager WaypointManager { get; private set; }
+        protected override void Awake()
+        {
+            base.Awake();
+
+            SetModule(GetModule<AIRaceModule>());
+            VehicleInputs = new AIVehicleInputs();
+            PathManager = FindObjectOfType<PathManager>();
+        }
 
         private void Start()
         {
-            VehicleInputs = new AIVehicleInputs();
-            State = AIState.Race;
             AssignVehicle(Driver.Vehicle);
-            WaypointManager = FindObjectOfType<WaypointManager>();
             
             SetupModules();
         }
 
-        public override void SetupModules()
-        {
-            base.SetupModules();
-        }
-        
         public void AssignVehicle(Vehicle vehicle)
         {
             Vehicle = vehicle;
@@ -82,46 +79,51 @@ namespace Demos.Vehicle
 
         public override void UpdateModules(float deltaTime)
         {
+            _deltaAccum += deltaTime;
+            
             if (UpdateInterval > 0 && _updateCount % UpdateInterval > 0)
             {
                 _updateCount++;
                 return;
             }
+
+            if (CurrentModule != null)
+                CurrentModule.UpdateModule(_deltaAccum);
             
-            for (int i = 0; i < Modules.Count; i++)
-            {
-                Modules[i].UpdateState(deltaTime);
-            }
+            _deltaAccum = 0f;
+            _updateCount = 0;
+        }
+
+        public void SetModule(AbstractAIModule module)
+        {
+            var prevModule = CurrentModule;
+            CurrentModule = module;
             
-            base.UpdateModules(deltaTime);
+            if(prevModule != null)
+                prevModule.ExitModule();
+            if(CurrentModule != null)
+                CurrentModule.EnterModule();
+            
+            onModuleChanged?.Invoke((prevModule, CurrentModule));
         }
 
         public void SetSteer(float value, float weight = 1f)
         {
-            if (weight > 0f)
-            {
-                value = Mathf.Lerp(VehicleInputs.Steer, value, weight);
-            }
+            value = Mathf.Lerp(VehicleInputs.Steer, value, weight);
             
             VehicleInputs.Steer = value;
         }
 
         public void SetThrottle(float value, float weight = 1f)
         {
-            if (weight > 0f)
-            {
-                value = Mathf.Lerp(VehicleInputs.Throttle, value, weight);
-            }
+            value = Mathf.Lerp(VehicleInputs.Throttle, value, weight);
             
             VehicleInputs.Throttle = value;
         }
 
         public void SetBrake(float value, float weight = 1f)
         {
-            if (weight > 0f)
-            {
-                value = Mathf.Lerp(VehicleInputs.Brake, value, weight);
-            }
+            value = Mathf.Lerp(VehicleInputs.Brake, value, weight);
             
             VehicleInputs.Brake = value;
         }
