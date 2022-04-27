@@ -29,7 +29,6 @@ namespace Demos.Vehicle
 
         public void CollisionStay(Collision other)
         {
-            var isPlaying = false;
             for (int i = 0; i < SparksParticleSystems.Count; i++)
             {
                 var dot = Vector3.Dot(other.relativeVelocity.normalized, other.GetContact(i).normal);
@@ -47,7 +46,6 @@ namespace Demos.Vehicle
                 SparksParticleSystems[i].transform.SetPositionAndRotation(other.GetContact(i).point + other.GetContact(i).normal * ContactOffset, rot);
                 //SparksParticleSystems[i].transform.position = _currentContacts[i].point + _currentContacts[i].normal * ContactOffset;
                 SparksParticleSystems[i].Play();
-                isPlaying = true;
             }
         }
 

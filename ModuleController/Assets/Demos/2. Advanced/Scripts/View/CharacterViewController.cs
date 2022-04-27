@@ -27,7 +27,6 @@ namespace Demos.Demo2
         private void Update()
         {
             UpdateModules(Time.deltaTime);
-
             UpdatePosition();
         }
         

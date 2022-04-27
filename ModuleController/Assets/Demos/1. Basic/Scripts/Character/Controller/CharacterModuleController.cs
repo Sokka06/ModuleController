@@ -18,7 +18,6 @@ namespace Demos
     /// <summary>
     /// Holds all modules, updates them and uses Character Controller to move and rotate the character.
     /// </summary>
-    [DefaultExecutionOrder(-5)] //Makes sure Modules are setup before any other script tries to access them.
     public class CharacterModuleController : MonoBehaviour, IModuleController<CharacterModuleController, AbstractCharacterModule>
     {
         public CharacterController CharacterController;
@@ -26,7 +25,6 @@ namespace Demos
         private Vector3 _internalVelocity;
 
         private bool _prevIsGrounded;
-        //private List<AbstractCharacterModule> _modules = new List<AbstractCharacterModule>();
 
         public List<AbstractCharacterModule> Modules { get; protected set; }
 
@@ -90,15 +88,6 @@ namespace Demos
             
             CharacterController.Move(horizontalMotion);
             CharacterController.Move(verticalMotion);
-            
-            return;
-            if (motion.y >= 0.0f) {
-                CharacterController.Move(verticalMotion);
-                CharacterController.Move(horizontalMotion);
-            } else {
-                CharacterController.Move(horizontalMotion);
-                CharacterController.Move(verticalMotion);
-            }
         }
         
         public void AddVelocity(Vector3 velocity)

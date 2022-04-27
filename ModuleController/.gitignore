@@ -60,3 +60,6 @@ crashlytics-build.properties
 
 # Crashlytics generated file
 [Aa]ssets/StarterAssets*
+
+# Custom
+/[Rr]ecordings/

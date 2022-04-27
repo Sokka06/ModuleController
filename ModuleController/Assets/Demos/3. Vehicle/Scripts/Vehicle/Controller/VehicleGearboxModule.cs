@@ -74,7 +74,6 @@ namespace Demos.Vehicle
         public bool AutoReverse = true;
 
         private VehicleInputModule _inputModule;
-        private float _brakeTime = 0f;
         
         public Gearbox Gearbox { get; private set; }
 

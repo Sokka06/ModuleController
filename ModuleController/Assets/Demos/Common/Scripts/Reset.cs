@@ -3,17 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Reset : MonoBehaviour
+namespace Demos.Common
 {
-    public Vector3 Position;
-    
-    private void OnTriggerEnter(Collider other)
+    public class Reset : MonoBehaviour
     {
-        if (other is CharacterController characterController)
+        public Vector3 Position;
+    
+        private void OnTriggerEnter(Collider other)
         {
-            characterController.enabled = false;
-            other.transform.position = Position;
-            characterController.enabled = true;
+            if (other is CharacterController characterController)
+            {
+                characterController.enabled = false;
+                other.transform.position = Position;
+                characterController.enabled = true;
+            }
         }
     }
 }

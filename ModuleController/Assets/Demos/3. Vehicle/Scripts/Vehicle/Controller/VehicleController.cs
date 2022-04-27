@@ -69,7 +69,6 @@ namespace Demos.Vehicle
         }
     }
 
-    [DefaultExecutionOrder(-5)]
     public class VehicleController : ModuleControllerBehaviour<VehicleController, AbstractVehicleModule>
     {
         public Rigidbody Rigidbody;
