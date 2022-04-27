@@ -337,15 +337,9 @@ MonoBehaviour:
   Enabled: 1
   Source: {fileID: 8202089965505319203}
   Clips:
-  - {fileID: 8300000, guid: f111df765ce434644bbef022aa3e423c, type: 3}
-  - {fileID: 8300000, guid: 6e7af9c5b1c90704896f8ac5675ecd0d, type: 3}
-  - {fileID: 8300000, guid: b062ab9e5ce6e1446b89b97467b29801, type: 3}
-  - {fileID: 8300000, guid: 00bdf4af30b30bd43be665d423b49018, type: 3}
-  - {fileID: 8300000, guid: c20901554d9a1f14a8ee8a7c83eec4bd, type: 3}
-  - {fileID: 8300000, guid: 742933f88e7a2df4a8e6ba96f6b87b84, type: 3}
-  - {fileID: 8300000, guid: f3d1224f3c65e6441855b1d24239572f, type: 3}
-  - {fileID: 8300000, guid: 757dba02b6a547a42a1a75d10f7e6e20, type: 3}
-  - {fileID: 8300000, guid: e1af6de520349a7459b3df47ef9b1544, type: 3}
+  - {fileID: 8300000, guid: ba7604dc8598c204eb0332e0e48a42c1, type: 3}
+  - {fileID: 8300000, guid: 228ee92bae4202f4caae31c4fda25b47, type: 3}
+  - {fileID: 8300000, guid: 2d52060105aee5246ad7544ac6fc7fa5, type: 3}
   MinImpulse: 1
   MaxImpulse: 10
 --- !u!1 &2734898649146352904
@@ -721,7 +715,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Collider: {fileID: 3855711103866762488}
   Stiffness: 1
-  LongitudinalFrictionModel: {fileID: 0}
   LateralFrictionModel: {fileID: 11400000, guid: 84e42bf499ec1c34d9213cfe4a447668, type: 2}
 --- !u!146 &3855711103866762488
 WheelCollider:
@@ -1094,7 +1087,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Collider: {fileID: 3855711104284103340}
   Stiffness: 1
-  LongitudinalFrictionModel: {fileID: 0}
   LateralFrictionModel: {fileID: 11400000, guid: 84e42bf499ec1c34d9213cfe4a447668, type: 2}
 --- !u!146 &3855711104284103340
 WheelCollider:
@@ -1253,7 +1245,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Collider: {fileID: 3855711104355361732}
   Stiffness: 1
-  LongitudinalFrictionModel: {fileID: 0}
   LateralFrictionModel: {fileID: 11400000, guid: 84e42bf499ec1c34d9213cfe4a447668, type: 2}
 --- !u!146 &3855711104355361732
 WheelCollider:
@@ -1736,7 +1727,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Collider: {fileID: 3855711105516427999}
   Stiffness: 1
-  LongitudinalFrictionModel: {fileID: 0}
   LateralFrictionModel: {fileID: 11400000, guid: 84e42bf499ec1c34d9213cfe4a447668, type: 2}
 --- !u!146 &3855711105516427999
 WheelCollider:
@@ -1866,7 +1856,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 0
-  MinDistance: 1
+  MinDistance: 2
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -2177,7 +2167,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: c6f0dabbe91ba6945b643d7e843316e7, type: 3}
+  m_audioClip: {fileID: 8300000, guid: c54b1ebbc408f8542a15885cc18d6c29, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
   m_Pitch: 0
@@ -2187,7 +2177,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 2
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -2884,18 +2874,18 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 3.007576
+      outSlope: 3.007576
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.33333334
+      outWeight: 0.01511335
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0
@@ -2907,9 +2897,9 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.75
-      inSlope: 0.75
-      outSlope: 0.75
+      value: 1
+      inSlope: 0.5
+      outSlope: 0.5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
@@ -2917,8 +2907,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1.5
-      inSlope: 0.75
-      outSlope: 0.75
+      inSlope: 0.5
+      outSlope: 0.5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -2936,7 +2926,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: c71825e02633db14f99c51d121ec80bc, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 0a5e2e4c101c85d4e98e6f1261cc54b0, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0
   m_Pitch: 0
@@ -2946,7 +2936,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 2
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
