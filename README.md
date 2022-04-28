@@ -1,4 +1,3 @@
-# Module Controller
 ![Module Controller](https://repository-images.githubusercontent.com/428422036/b9c2a601-b3fb-4893-b3d5-c6f2ebb6548d)
 
 ## What is it?
