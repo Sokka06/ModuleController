@@ -1036,6 +1036,7 @@ GameObject:
   - component: {fileID: 1964071436874305556}
   - component: {fileID: 1964071436874305559}
   - component: {fileID: 6451001540352748254}
+  - component: {fileID: 5501664108938825936}
   - component: {fileID: 3111409951931944730}
   - component: {fileID: 1964071436874305558}
   m_Layer: 0
@@ -1206,6 +1207,21 @@ MonoBehaviour:
   HandbrakedWheels:
   - {fileID: 3365558917366127780}
   - {fileID: 238781135796939201}
+--- !u!114 &5501664108938825936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1964071436874305552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dad5479ce37dcd1459ca67c6ce682af1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  Coefficient: 0.4
+  FrontalArea: 2
 --- !u!114 &3111409951931944730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1607,37 +1623,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Enabled: 1
-  driftSpinAssist: 2
-  driftSpinSpeed: 3
-  driftSpinExponent: 2
+  SpinAssist: 2
+  SpinSpeed: 3
+  SpinExponent: 2
   autoSteerDrift: 1
   maxDriftAngle: 70
-  driftSpinCurve:
+  SpinCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0.1
-      tangentMode: 0
+      inSlope: 0.2
+      outSlope: 0.2
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 3
+      value: 0.6
+      inSlope: 0.12857142
+      outSlope: 0.12857142
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 10
       value: 1
-      inSlope: 0.1
+      inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  driftPush: 3
-  straightenAssist: 1
+  DriftPush: 3
+  StraightenAssist: 1
 --- !u!1 &1964071437595374643
 GameObject:
   m_ObjectHideFlags: 0
@@ -3389,13 +3414,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c6b2f7cd92b24f4a88bd9c77fb3810b, type: 3}
---- !u!4 &574150266332138289 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8174844921551479086, guid: 7c6b2f7cd92b24f4a88bd9c77fb3810b, type: 3}
-  m_PrefabInstance: {fileID: 8540276819177712159}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &3436952922941023266 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6428794999033613885, guid: 7c6b2f7cd92b24f4a88bd9c77fb3810b, type: 3}
+  m_PrefabInstance: {fileID: 8540276819177712159}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &574150266332138289 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8174844921551479086, guid: 7c6b2f7cd92b24f4a88bd9c77fb3810b, type: 3}
   m_PrefabInstance: {fileID: 8540276819177712159}
   m_PrefabAsset: {fileID: 0}
