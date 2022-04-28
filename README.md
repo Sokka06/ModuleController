@@ -1,4 +1,4 @@
-![Module Controller](https://repository-images.githubusercontent.com/428422036/b9c2a601-b3fb-4893-b3d5-c6f2ebb6548d)
+![Module Controller](https://repository-images.githubusercontent.com/428422036/a7d3d8f2-bab9-49f1-9b97-0138ff3d8bec)
 
 ## What is it?
 *Module Controller* helps you piece your *Character Controllers*, *Vehicle Controllers*, and others into smaller modular pieces (aka *Modules*). This helps you keep your scripts more focused and makes it easier to modify and add new features.
