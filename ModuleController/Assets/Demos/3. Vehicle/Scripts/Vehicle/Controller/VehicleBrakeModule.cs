@@ -43,7 +43,7 @@ namespace Demos.Vehicle
                 var velocity = Controller.PointVelocity(wheelHit.point);
                 
                 var load = BrakedWheels[i].sprungMass;
-                var force = Vector3.ClampMagnitude(-Vector3.ProjectOnPlane(velocity, wheelHit.normal), 1f) * load * BrakeFactor * input;
+                var force = Vector3.ClampMagnitude(-Vector3.ProjectOnPlane(velocity, wheelHit.normal), 1f) * (load * BrakeFactor * input);
 
                 Controller.AddVelocity(force, wheelHit.point);
             }

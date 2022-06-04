@@ -48,7 +48,7 @@ namespace Demos.Vehicle
 
                 var forward = Vector3.Cross(wheelHit.sidewaysDir, wheelHit.normal);
                 var velocity = Controller.PointVelocity(wheelHit.point);
-                var velocityDiff = Vector3.ProjectOnPlane((forward * targetSpeed) - velocity, Vector3.up);
+                var velocityDiff = (forward * targetSpeed) - velocity;
                 var force = velocityDiff * Acceleration;
                 
                 Controller.AddVelocity(force / PoweredWheels.Count, wheelHit.point, ForceMode.Acceleration);
